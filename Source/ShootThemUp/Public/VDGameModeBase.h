@@ -12,6 +12,5 @@
 UCLASS()
 class SHOOTTHEMUP_API AVDGameModeBase : public AGameModeBase
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
 };
