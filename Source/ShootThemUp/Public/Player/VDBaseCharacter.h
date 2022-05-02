@@ -15,7 +15,7 @@ class SHOOTTHEMUP_API AVDBaseCharacter : public ACharacter
 
 public:
     // Sets default values for this character's properties
-    AVDBaseCharacter();
+    AVDBaseCharacter(const FObjectInitializer& ObjInit);
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -27,9 +27,6 @@ protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
-    UFUNCTION(BlueprintCallable, Category = "Movement")
-    bool IsRunning() const;
-
 public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
@@ -37,6 +34,9 @@ public:
     // Called to bind functionality to input
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+    UFUNCTION(BlueprintCallable, Category = "Movement")
+    bool IsRunning() const;
+    
 private:
     bool WantsToRun = false;
     bool IsMovingForward = false;

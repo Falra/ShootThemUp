@@ -4,9 +4,11 @@
 #include "Player/VDBaseCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Components/VDCharacterMovementComponent.h"
 
 // Sets default values
-AVDBaseCharacter::AVDBaseCharacter()
+AVDBaseCharacter::AVDBaseCharacter(const FObjectInitializer& ObjInit)
+    : Super(ObjInit.SetDefaultSubobjectClass<UVDCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
