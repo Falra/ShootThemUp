@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "VDBaseCharacter.generated.h"
 
+class USpringArmComponent;
 class UCameraComponent;
 UCLASS()
 class SHOOTTHEMUP_API AVDBaseCharacter : public ACharacter
@@ -18,8 +19,11 @@ public:
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    USpringArmComponent* SpringArmComponent;
+    
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UCameraComponent* CameraComponent;
-
+    
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
@@ -33,7 +37,4 @@ public:
 private:
     void MoveForward(float Amount);
     void MoveRight(float Amount);
-
-    void LookUp(float Amount);
-    void TurnAround(float Amount);
 };
