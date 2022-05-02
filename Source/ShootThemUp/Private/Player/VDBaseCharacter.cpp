@@ -33,6 +33,9 @@ void AVDBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
     PlayerInputComponent->BindAxis("MoveForward", this, &AVDBaseCharacter::MoveForward);
     PlayerInputComponent->BindAxis("MoveRight", this, &AVDBaseCharacter::MoveRight);
+
+    PlayerInputComponent->BindAxis("LookUp", this, &AVDBaseCharacter::LookUp);
+    PlayerInputComponent->BindAxis("TurnAround", this, &AVDBaseCharacter::TurnAround);
 }
 
 void AVDBaseCharacter::MoveForward(float Amount)
@@ -43,4 +46,14 @@ void AVDBaseCharacter::MoveForward(float Amount)
 void AVDBaseCharacter::MoveRight(float Amount)
 {
     AddMovementInput(GetActorRightVector(), Amount);
+}
+
+void AVDBaseCharacter::LookUp(float Amount)
+{
+    AddControllerPitchInput(Amount);
+}
+
+void AVDBaseCharacter::TurnAround(float Amount)
+{
+    AddControllerYawInput(Amount);
 }
