@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "VDBaseCharacter.generated.h"
 
+class UCameraComponent;
 UCLASS()
 class SHOOTTHEMUP_API AVDBaseCharacter : public ACharacter
 {
@@ -16,6 +17,9 @@ public:
     AVDBaseCharacter();
 
 protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UCameraComponent* CameraComponent;
+
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
