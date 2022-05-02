@@ -43,14 +43,33 @@ void AVDBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
     PlayerInputComponent->BindAxis("TurnAround", this, &AVDBaseCharacter::AddControllerYawInput);
 
     PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AVDBaseCharacter::Jump);
+
+    PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AVDBaseCharacter::OnStartRunning);
+    PlayerInputComponent->BindAction("Run", IE_Released, this, &AVDBaseCharacter::OnStopRunning);
+}
+
+bool AVDBaseCharacter::IsRunning() const
+{
+    return WantsToRun && IsMovingForward && !GetVelocity().IsZero();
 }
 
 void AVDBaseCharacter::MoveForward(float Amount)
 {
+    IsMovingForward = Amount > 0.0f;
     AddMovementInput(GetActorForwardVector(), Amount);
 }
 
 void AVDBaseCharacter::MoveRight(float Amount)
 {
     AddMovementInput(GetActorRightVector(), Amount);
+}
+
+void AVDBaseCharacter::OnStartRunning()
+{
+    WantsToRun = true;
+}
+
+void AVDBaseCharacter::OnStopRunning()
+{
+    WantsToRun = false;
 }

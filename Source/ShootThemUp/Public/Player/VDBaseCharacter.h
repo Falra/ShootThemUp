@@ -27,6 +27,9 @@ protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
+    UFUNCTION(BlueprintCallable, Category = "Movement")
+    bool IsRunning() const;
+
 public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
@@ -35,6 +38,12 @@ public:
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
+    bool WantsToRun = false;
+    bool IsMovingForward = false;
+
     void MoveForward(float Amount);
     void MoveRight(float Amount);
+
+    void OnStartRunning();
+    void OnStopRunning();
 };
