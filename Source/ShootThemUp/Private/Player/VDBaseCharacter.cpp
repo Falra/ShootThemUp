@@ -55,14 +55,27 @@ bool AVDBaseCharacter::IsRunning() const
     return WantsToRun && IsMovingForward && !GetVelocity().IsZero();
 }
 
+float AVDBaseCharacter::GetMovementDirection() const
+{
+    if(GetVelocity().IsZero()) return  0.0f;
+    
+    const auto VelocityNormal = GetVelocity().GetSafeNormal();
+    const auto AngleBetween = FMath::Acos(FVector::DotProduct(GetActorForwardVector(), VelocityNormal));
+    const auto CrossProduct = FVector::CrossProduct(GetActorForwardVector(), VelocityNormal);
+    const auto RadiansToDegrees = FMath::RadiansToDegrees(AngleBetween);
+    return CrossProduct.IsZero() ? RadiansToDegrees : RadiansToDegrees * FMath::Sign(CrossProduct.Z);
+}
+
 void AVDBaseCharacter::MoveForward(float Amount)
 {
     IsMovingForward = Amount > 0.0f;
+    if (Amount == 0.0f) return;
     AddMovementInput(GetActorForwardVector(), Amount);
 }
 
 void AVDBaseCharacter::MoveRight(float Amount)
 {
+    if (Amount == 0.0f) return;
     AddMovementInput(GetActorRightVector(), Amount);
 }
 
