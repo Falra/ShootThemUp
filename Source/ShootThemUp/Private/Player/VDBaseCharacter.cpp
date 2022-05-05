@@ -118,7 +118,7 @@ void AVDBaseCharacter::OnDeath()
 
     GetCharacterMovement()->DisableMovement();
 
-    SetLifeSpan(5.0f);
+    SetLifeSpan(LifeSpanOnDeath);
 
     if(Controller)
     {
@@ -133,7 +133,7 @@ void AVDBaseCharacter::OnHealthChanged(float NewHealth)
 
 void AVDBaseCharacter::OnGroundLanded(const FHitResult& Hit)
 {
-    const auto FallVelocityZ = -GetCharacterMovement()->Velocity.Z;
+    const auto FallVelocityZ = -GetVelocity().Z;
     UE_LOG(BaseCharacterLog, Display, TEXT("On Landed: %f"), FallVelocityZ);
 
     if(FallVelocityZ < LandedDamageVelocity.X) return;
