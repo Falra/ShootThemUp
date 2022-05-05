@@ -11,7 +11,6 @@ class UCameraComponent;
 class UVDHealthComponent;
 class UTextRenderComponent;
 class UAnimMontage;
-class AVDBaseWeapon;
 
 UCLASS()
 class SHOOTTHEMUP_API AVDBaseCharacter : public ACharacter
@@ -47,9 +46,6 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Damage")
     FVector2D LandedDamage = FVector2D(10.0f, 100.f);
 
-    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    TSubclassOf<AVDBaseWeapon> WeaponClass;
-    
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
@@ -81,7 +77,4 @@ private:
 
     UFUNCTION()
     void OnGroundLanded(const FHitResult& Hit);
-
-    void SpawnWeapon();
-    
 };
