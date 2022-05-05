@@ -8,6 +8,9 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class UVDHealthComponent;
+class UTextRenderComponent;
+
 UCLASS()
 class SHOOTTHEMUP_API AVDBaseCharacter : public ACharacter
 {
@@ -23,6 +26,12 @@ protected:
     
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UCameraComponent* CameraComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UVDHealthComponent* HealthComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UTextRenderComponent* HealthTextComponent;
     
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
