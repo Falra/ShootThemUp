@@ -4,6 +4,8 @@
 #include "Weapon/VDBaseWeapon.h"
 #include "Components/SkeletalMeshComponent.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
+
 AVDBaseWeapon::AVDBaseWeapon()
 {
     PrimaryActorTick.bCanEverTick = false;
@@ -15,4 +17,9 @@ AVDBaseWeapon::AVDBaseWeapon()
 void AVDBaseWeapon::BeginPlay()
 {
     Super::BeginPlay();
+}
+
+void AVDBaseWeapon::Fire()
+{
+    UE_LOG(LogBaseWeapon, Display, TEXT("FIRE"));
 }

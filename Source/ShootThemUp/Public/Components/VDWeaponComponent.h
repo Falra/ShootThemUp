@@ -16,6 +16,8 @@ class SHOOTTHEMUP_API UVDWeaponComponent : public UActorComponent
 public:
     UVDWeaponComponent();
 
+    void Fire();
+
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     TSubclassOf<AVDBaseWeapon> WeaponClass;
@@ -26,5 +28,8 @@ protected:
     virtual void BeginPlay() override;
 
 private:
+    UPROPERTY()
+    AVDBaseWeapon* CurrentWeapon = nullptr;
+    
     void SpawnWeapon();
 };

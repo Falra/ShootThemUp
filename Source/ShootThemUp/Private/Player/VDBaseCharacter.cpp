@@ -3,6 +3,7 @@
 
 #include "Player/VDBaseCharacter.h"
 
+#include "Components/VDWeaponComponent.h"
 #include "Components/VDHealthComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/TextRenderComponent.h"
@@ -32,6 +33,8 @@ AVDBaseCharacter::AVDBaseCharacter(const FObjectInitializer& ObjInit)
     HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
     HealthTextComponent->SetupAttachment(GetRootComponent());
     HealthTextComponent->SetOwnerNoSee(true);
+
+    WeaponComponent = CreateDefaultSubobject<UVDWeaponComponent>("WeaponComponent");
 }
 
 // Called when the game starts or when spawned
@@ -61,6 +64,9 @@ void AVDBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+    check(PlayerInputComponent);
+    check(WeaponComponent);
+
     PlayerInputComponent->BindAxis("MoveForward", this, &AVDBaseCharacter::MoveForward);
     PlayerInputComponent->BindAxis("MoveRight", this, &AVDBaseCharacter::MoveRight);
 
@@ -71,6 +77,8 @@ void AVDBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
     PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AVDBaseCharacter::OnStartRunning);
     PlayerInputComponent->BindAction("Run", IE_Released, this, &AVDBaseCharacter::OnStopRunning);
+
+    PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &UVDWeaponComponent::Fire);
 }
 
 bool AVDBaseCharacter::IsRunning() const

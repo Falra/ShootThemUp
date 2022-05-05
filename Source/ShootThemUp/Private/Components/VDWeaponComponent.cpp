@@ -17,7 +17,6 @@ void UVDWeaponComponent::BeginPlay()
     SpawnWeapon();
 }
 
-
 void UVDWeaponComponent::SpawnWeapon()
 {
     if(!GetWorld()) return;
@@ -25,10 +24,16 @@ void UVDWeaponComponent::SpawnWeapon()
     ACharacter* Character = Cast<ACharacter>(GetOwner());
     if (!Character) return;
 
-    const auto Weapon = GetWorld()->SpawnActor<AVDBaseWeapon>(WeaponClass);
-    if(!Weapon) return;
+    CurrentWeapon = GetWorld()->SpawnActor<AVDBaseWeapon>(WeaponClass);
+    if(!CurrentWeapon) return;
     
     const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
     WeaponSocketName = "WeaponPoint";
-    Weapon->AttachToComponent(Character->GetMesh(), AttachmentRules, WeaponSocketName);
+    CurrentWeapon->AttachToComponent(Character->GetMesh(), AttachmentRules, WeaponSocketName);
+}
+
+void UVDWeaponComponent::Fire()
+{
+    if(!CurrentWeapon) return;
+    CurrentWeapon->Fire();
 }

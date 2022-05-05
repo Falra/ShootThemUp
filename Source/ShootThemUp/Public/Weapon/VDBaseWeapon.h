@@ -16,6 +16,8 @@ class SHOOTTHEMUP_API AVDBaseWeapon : public AActor
 public:
     AVDBaseWeapon();
 
+    virtual void Fire();
+    
 protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
