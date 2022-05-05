@@ -9,6 +9,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/VDCharacterMovementComponent.h"
 
+DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
+
 // Sets default values
 AVDBaseCharacter::AVDBaseCharacter(const FObjectInitializer& ObjInit)
     : Super(ObjInit.SetDefaultSubobjectClass<UVDCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -36,6 +38,7 @@ void AVDBaseCharacter::BeginPlay()
 
     check(HealthComponent);
     check(HealthTextComponent);
+
 }
 
 // Called every frame
@@ -45,6 +48,8 @@ void AVDBaseCharacter::Tick(float DeltaTime)
 
     const auto Health = HealthComponent->GetHealth();
     HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
+
+    TakeDamage(0.1f, FDamageEvent{}, Controller, this);
 }
 
 // Called to bind functionality to input
