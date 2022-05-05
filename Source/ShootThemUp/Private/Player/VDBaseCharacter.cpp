@@ -38,17 +38,17 @@ void AVDBaseCharacter::BeginPlay()
 
     check(HealthComponent);
     check(HealthTextComponent);
+    check(GetCharacterMovement());
 
+    OnHealthChanged(HealthComponent->GetHealth());
     HealthComponent->OnDeath.AddUObject(this, &AVDBaseCharacter::OnDeath);
+    HealthComponent->OnHealthChanged.AddUObject(this, &AVDBaseCharacter::OnHealthChanged);
 }
 
 // Called every frame
 void AVDBaseCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-
-    const auto Health = HealthComponent->GetHealth();
-    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
 
 // Called to bind functionality to input
@@ -110,4 +110,15 @@ void AVDBaseCharacter::OnStopRunning()
 void AVDBaseCharacter::OnDeath()
 {
     UE_LOG(BaseCharacterLog, Display, TEXT("YOU DEAD!!!"));
+
+    PlayAnimMontage(DeathAnimMontage);
+
+    GetCharacterMovement()->DisableMovement();
+
+    SetLifeSpan(5.0f);
+}
+
+void AVDBaseCharacter::OnHealthChanged(float NewHealth)
+{
+    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), NewHealth)));
 }

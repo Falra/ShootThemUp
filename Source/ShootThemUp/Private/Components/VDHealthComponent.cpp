@@ -15,7 +15,8 @@ void UVDHealthComponent::BeginPlay()
     Super::BeginPlay();
 
     Health = MaxHealth;
-
+    OnHealthChanged.Broadcast(Health);
+    
     AActor* ComponentOwner = GetOwner();
     if(ComponentOwner)
     {
@@ -30,7 +31,8 @@ void UVDHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, con
     if(Damage <= 0.0f || IsDead()) return;
     
     Health = FMath::Clamp(Health - Damage, 0.0f , MaxHealth);
-
+    OnHealthChanged.Broadcast(Health);
+    
     if (IsDead())
     {
         OnDeath.Broadcast();

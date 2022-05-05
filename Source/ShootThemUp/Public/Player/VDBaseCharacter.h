@@ -10,6 +10,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UVDHealthComponent;
 class UTextRenderComponent;
+class UAnimMontage;
 
 UCLASS()
 class SHOOTTHEMUP_API AVDBaseCharacter : public ACharacter
@@ -32,6 +33,9 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UTextRenderComponent* HealthTextComponent;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    UAnimMontage* DeathAnimMontage;
     
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
@@ -60,5 +64,6 @@ private:
     void OnStopRunning();
 
     void OnDeath();
+    void OnHealthChanged(float NewHealth);
 
 };
