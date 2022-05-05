@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "VDHealthComponent.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnDeath)
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class SHOOTTHEMUP_API UVDHealthComponent : public UActorComponent
@@ -16,6 +17,11 @@ public:
     UVDHealthComponent();
 
     float GetHealth() const { return Health; }
+
+    UFUNCTION(BlueprintCallable)
+    bool IsDead() const { return Health <= 0.0f; }
+
+    FOnDeath OnDeath;
     
 protected:
 

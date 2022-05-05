@@ -39,6 +39,7 @@ void AVDBaseCharacter::BeginPlay()
     check(HealthComponent);
     check(HealthTextComponent);
 
+    HealthComponent->OnDeath.AddUObject(this, &AVDBaseCharacter::OnDeath);
 }
 
 // Called every frame
@@ -104,4 +105,9 @@ void AVDBaseCharacter::OnStartRunning()
 void AVDBaseCharacter::OnStopRunning()
 {
     WantsToRun = false;
+}
+
+void AVDBaseCharacter::OnDeath()
+{
+    UE_LOG(BaseCharacterLog, Display, TEXT("YOU DEAD!!!"));
 }

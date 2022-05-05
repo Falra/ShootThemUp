@@ -2,8 +2,6 @@
 
 
 #include "Components/VDHealthComponent.h"
-#include "Dev/VDFireDamageType.h"
-#include "Dev/VDIceDamageType.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All);
 
@@ -29,18 +27,12 @@ void UVDHealthComponent::BeginPlay()
 void UVDHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy,
     AActor* DamageCauser)
 {
-    Health -= Damage;
+    if(Damage <= 0.0f || IsDead()) return;
+    
+    Health = FMath::Clamp(Health - Damage, 0.0f , MaxHealth);
 
-    UE_LOG(LogHealthComponent, Display, TEXT("Damage: %f"), Damage);
-
-    if(DamageType)
+    if (IsDead())
     {
-        if(DamageType->IsA<UVDFireDamageType>())
-        {
-            UE_LOG(LogHealthComponent, Display, TEXT("Fire"));
-        } else if(DamageType->IsA<UVDIceDamageType>())
-        {
-            UE_LOG(LogHealthComponent, Display, TEXT("Ice"));
-        }
+        OnDeath.Broadcast();
     }
 }

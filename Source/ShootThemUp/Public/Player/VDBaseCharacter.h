@@ -59,4 +59,6 @@ private:
     void OnStartRunning();
     void OnStopRunning();
 
+    void OnDeath();
+
 };
