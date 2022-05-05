@@ -9,6 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/VDCharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
+#include "Weapon/VDBaseWeapon.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
 
@@ -46,6 +47,8 @@ void AVDBaseCharacter::BeginPlay()
     HealthComponent->OnHealthChanged.AddUObject(this, &AVDBaseCharacter::OnHealthChanged);
 
     LandedDelegate.AddDynamic(this, &AVDBaseCharacter::OnGroundLanded);
+
+    SpawnWeapon();
 }
 
 // Called every frame
@@ -142,4 +145,15 @@ void AVDBaseCharacter::OnGroundLanded(const FHitResult& Hit)
     UE_LOG(BaseCharacterLog, Display, TEXT("Final damage: %f"), FinalDamage);
 
     TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
+}
+
+void AVDBaseCharacter::SpawnWeapon()
+{
+    if(!GetWorld()) return;
+    const auto Weapon = GetWorld()->SpawnActor<AVDBaseWeapon>(WeaponClass);
+    if(Weapon)
+    {
+        const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
+        Weapon->AttachToComponent(GetMesh(), AttachmentRules, "WeaponPoint");
+    }
 }
