@@ -3,6 +3,8 @@
 
 #include "Components/VDHealthComponent.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All);
+
 UVDHealthComponent::UVDHealthComponent()
 {
     PrimaryComponentTick.bCanEverTick = false;
@@ -26,4 +28,6 @@ void UVDHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, con
     AActor* DamageCauser)
 {
     Health -= Damage;
+
+    UE_LOG(LogHealthComponent, Display, TEXT("Damage: %f"), Damage);
 }
