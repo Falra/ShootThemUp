@@ -8,6 +8,7 @@
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/VDCharacterMovementComponent.h"
+#include "GameFramework/Controller.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
 
@@ -116,6 +117,11 @@ void AVDBaseCharacter::OnDeath()
     GetCharacterMovement()->DisableMovement();
 
     SetLifeSpan(5.0f);
+
+    if(Controller)
+    {
+        Controller->ChangeState(NAME_Spectating);
+    }
 }
 
 void AVDBaseCharacter::OnHealthChanged(float NewHealth)
