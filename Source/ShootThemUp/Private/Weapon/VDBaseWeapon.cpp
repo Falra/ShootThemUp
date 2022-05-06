@@ -27,36 +27,14 @@ void AVDBaseWeapon::BeginPlay()
 
 void AVDBaseWeapon::StartFire()
 {
-    MakeShot();
-    GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &AVDBaseWeapon::MakeShot, TimeBetweenShots, true);
 }
 
 void AVDBaseWeapon::StopFire()
 {
-    GetWorldTimerManager().ClearTimer(ShotTimerHandle);
 }
 
 void AVDBaseWeapon::MakeShot()
 {
-    if(!GetWorld()) return;
-
-    FVector TraceStart, TraceEnd;
-    if(!GetTraceData(TraceStart, TraceEnd)) return;
-    
-    FHitResult HitResult;
-    MakeHit(HitResult, TraceStart, TraceEnd);
-
-    const FVector MuzzleLocation = GetMuzzleWorldLocation();
-    if(HitResult.bBlockingHit)
-    {
-        MakeDamage(HitResult);
-        DrawDebugLine(GetWorld(), MuzzleLocation, HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.0f);
-        DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
-    }
-    else
-    {
-        DrawDebugLine(GetWorld(), MuzzleLocation, TraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
-    }
 }
 
 APlayerController* AVDBaseWeapon::GetPLayerController() const
@@ -88,8 +66,7 @@ bool AVDBaseWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd) const
     if(!GetPlayerViewPoint(ViewLocation, ViewRotation)) return false;
     
     TraceStart = ViewLocation;
-    const auto HalfRad = FMath::DegreesToRadians(BulletSpread);
-    const FVector ShootDirection = FMath::VRandCone(ViewRotation.Vector(), HalfRad);
+    const FVector ShootDirection = ViewRotation.Vector();
     TraceEnd = TraceStart + ShootDirection * TraceMaxDistance;
     return true;
 }
