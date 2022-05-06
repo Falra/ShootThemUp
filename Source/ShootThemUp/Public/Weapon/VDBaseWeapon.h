@@ -22,7 +22,14 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
     USkeletalMeshComponent* WeaponMesh;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FName MuzzleSocketName = "MuzzleFlashSocket";
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float TraceMaxDistance = 1500.0f;
     
     virtual void BeginPlay() override;
 
+    void MakeShot();
 };
