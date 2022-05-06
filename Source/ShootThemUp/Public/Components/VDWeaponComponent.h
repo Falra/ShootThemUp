@@ -16,7 +16,8 @@ class SHOOTTHEMUP_API UVDWeaponComponent : public UActorComponent
 public:
     UVDWeaponComponent();
 
-    void Fire();
+    void StartFire();
+    void StopFire();
 
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")

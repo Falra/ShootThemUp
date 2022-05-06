@@ -25,9 +25,15 @@ void AVDBaseWeapon::BeginPlay()
     check(WeaponMesh);
 }
 
-void AVDBaseWeapon::Fire()
+void AVDBaseWeapon::StartFire()
 {
     MakeShot();
+    GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &AVDBaseWeapon::MakeShot, TimeBetweenShots, true);
+}
+
+void AVDBaseWeapon::StopFire()
+{
+    GetWorldTimerManager().ClearTimer(ShotTimerHandle);
 }
 
 void AVDBaseWeapon::MakeShot()
@@ -82,7 +88,8 @@ bool AVDBaseWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd) const
     if(!GetPlayerViewPoint(ViewLocation, ViewRotation)) return false;
     
     TraceStart = ViewLocation;
-    const FVector ShootDirection = ViewRotation.Vector();
+    const auto HalfRad = FMath::DegreesToRadians(BulletSpread);
+    const FVector ShootDirection = FMath::VRandCone(ViewRotation.Vector(), HalfRad);
     TraceEnd = TraceStart + ShootDirection * TraceMaxDistance;
     return true;
 }

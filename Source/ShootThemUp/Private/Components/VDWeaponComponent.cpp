@@ -33,8 +33,14 @@ void UVDWeaponComponent::SpawnWeapon()
     CurrentWeapon->SetOwner(Character);
 }
 
-void UVDWeaponComponent::Fire()
+void UVDWeaponComponent::StartFire()
 {
     if(!CurrentWeapon) return;
-    CurrentWeapon->Fire();
+    CurrentWeapon->StartFire();
+}
+
+void UVDWeaponComponent::StopFire()
+{
+    if(!CurrentWeapon) return;
+    CurrentWeapon->StopFire();
 }
