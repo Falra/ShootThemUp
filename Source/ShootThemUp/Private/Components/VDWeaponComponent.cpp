@@ -30,6 +30,7 @@ void UVDWeaponComponent::SpawnWeapon()
     const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
     WeaponSocketName = "WeaponPoint";
     CurrentWeapon->AttachToComponent(Character->GetMesh(), AttachmentRules, WeaponSocketName);
+    CurrentWeapon->SetOwner(Character);
 }
 
 void UVDWeaponComponent::Fire()
