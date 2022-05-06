@@ -43,6 +43,7 @@ void AVDBaseWeapon::MakeShot()
     const FVector MuzzleLocation = GetMuzzleWorldLocation();
     if(HitResult.bBlockingHit)
     {
+        MakeDamage(HitResult);
         DrawDebugLine(GetWorld(), MuzzleLocation, HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.0f);
         DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
     }
@@ -94,4 +95,12 @@ void AVDBaseWeapon::MakeHit(FHitResult& HitResult, const FVector& TraceStart, co
     CollisionParams.AddIgnoredActor(GetOwner());
 
     GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility, CollisionParams);
+}
+
+void AVDBaseWeapon::MakeDamage(const FHitResult& HitResult)
+{
+    const auto DamagedActor = HitResult.GetActor();
+    if(!DamagedActor) return;
+
+    DamagedActor->TakeDamage(DamageAmount, FDamageEvent(), GetPLayerController(), this);
 }

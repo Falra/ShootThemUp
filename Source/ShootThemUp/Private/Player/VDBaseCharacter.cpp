@@ -6,6 +6,7 @@
 #include "Components/VDWeaponComponent.h"
 #include "Components/VDHealthComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/VDCharacterMovementComponent.h"
@@ -134,6 +135,7 @@ void AVDBaseCharacter::OnDeath()
     {
         Controller->ChangeState(NAME_Spectating);
     }
+    GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 }
 
 void AVDBaseCharacter::OnHealthChanged(float NewHealth)
