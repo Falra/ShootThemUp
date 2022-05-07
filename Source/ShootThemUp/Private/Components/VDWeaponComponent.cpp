@@ -4,6 +4,9 @@
 #include "Components/VDWeaponComponent.h"
 #include "Weapon/VDBaseWeapon.h"
 #include "GameFramework/Character.h"
+#include "Animations/VDEquipFinishedAnimNotify.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
 UVDWeaponComponent::UVDWeaponComponent()
 {
@@ -15,6 +18,7 @@ void UVDWeaponComponent::BeginPlay()
     Super::BeginPlay();
 
     CurrentWeaponIndex = 0;
+    InitAnimations();
     SpawnWeapons();
     EquipWeapon(CurrentWeaponIndex);
 }
@@ -95,4 +99,32 @@ void UVDWeaponComponent::PlayAnimMontage(UAnimMontage* Animation)
     if (!Character) return;
 
     Character->PlayAnimMontage(Animation);
+}
+
+void UVDWeaponComponent::InitAnimations()
+{
+    if(!EquipAnimMontage) return;
+
+    const auto NotifyEvents = EquipAnimMontage->Notifies;
+    for(auto NotifyEvent : NotifyEvents)
+    {
+        auto EquipFinishedNotify = Cast<UVDEquipFinishedAnimNotify>(NotifyEvent.Notify);
+        if(EquipFinishedNotify)
+        {
+            EquipFinishedNotify->OnNotified.AddUObject(this, &UVDWeaponComponent::OnEquipFinished);
+            break;
+        }
+    }
+    
+}
+
+void UVDWeaponComponent::OnEquipFinished(USkeletalMeshComponent* MeshComp)
+{
+    ACharacter* Character = Cast<ACharacter>(GetOwner());
+    if (!Character) return;
+
+    if(Character->GetMesh() == MeshComp)
+    {
+        UE_LOG(LogWeaponComponent, Display, TEXT("Equip finished"));
+    }
 }
