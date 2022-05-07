@@ -5,6 +5,7 @@
 #include "Weapon/VDBaseWeapon.h"
 #include "GameFramework/Character.h"
 #include "Animations/VDEquipFinishedAnimNotify.h"
+#include "Animations/VDReloadFinishedAnimNotify.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
@@ -73,6 +74,8 @@ void UVDWeaponComponent::NextWeapon()
 
 void UVDWeaponComponent::Reload()
 {
+    if(!CanReload()) return;
+    ReloadAnimInProgress = true;
     PlayAnimMontage(CurrentReloadAnimMontage);
 }
 
@@ -125,19 +128,18 @@ void UVDWeaponComponent::PlayAnimMontage(UAnimMontage* Animation)
 
 void UVDWeaponComponent::InitAnimations()
 {
-    if(!EquipAnimMontage) return;
-
-    const auto NotifyEvents = EquipAnimMontage->Notifies;
-    for(auto NotifyEvent : NotifyEvents)
+    auto EquipFinishedNotify = FindNotifyByClass<UVDEquipFinishedAnimNotify>(EquipAnimMontage);
+    if(EquipFinishedNotify)
     {
-        auto EquipFinishedNotify = Cast<UVDEquipFinishedAnimNotify>(NotifyEvent.Notify);
-        if(EquipFinishedNotify)
-        {
-            EquipFinishedNotify->OnNotified.AddUObject(this, &UVDWeaponComponent::OnEquipFinished);
-            break;
-        }
+        EquipFinishedNotify->OnNotified.AddUObject(this, &UVDWeaponComponent::OnEquipFinished);
     }
-    
+
+    for(auto OneWeaponData : WeaponData)
+    {
+        auto ReloadFinishedNotify = FindNotifyByClass<UVDReloadFinishedAnimNotify>(OneWeaponData.ReloadAnimMontage);
+        if(!ReloadFinishedNotify) continue;
+        ReloadFinishedNotify->OnNotified.AddUObject(this, &UVDWeaponComponent::OnReloadFinished);
+    }
 }
 
 void UVDWeaponComponent::OnEquipFinished(USkeletalMeshComponent* MeshComp)
@@ -148,12 +150,25 @@ void UVDWeaponComponent::OnEquipFinished(USkeletalMeshComponent* MeshComp)
     EquipAnimInProgress = false;
 }
 
+void UVDWeaponComponent::OnReloadFinished(USkeletalMeshComponent* MeshComp)
+{
+    ACharacter* Character = Cast<ACharacter>(GetOwner());
+    if (!Character || MeshComp != Character->GetMesh()) return;
+
+    ReloadAnimInProgress = false;
+}
+
 bool UVDWeaponComponent::CanFire() const
 {
-    return CurrentWeapon && !EquipAnimInProgress; 
+    return CurrentWeapon && !EquipAnimInProgress && !ReloadAnimInProgress; 
 }
 
 bool UVDWeaponComponent::CanEquip() const
 {
-    return !EquipAnimInProgress;
+    return !EquipAnimInProgress && !ReloadAnimInProgress;
+}
+
+bool UVDWeaponComponent::CanReload() const
+{
+    return CurrentWeapon && !EquipAnimInProgress && !ReloadAnimInProgress; 
 }
