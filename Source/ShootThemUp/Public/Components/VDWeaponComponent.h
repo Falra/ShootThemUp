@@ -3,22 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "VDCoreTypes.h"
 #include "Components/ActorComponent.h"
 #include "VDWeaponComponent.generated.h"
 
 class AVDBaseWeapon;
-
-USTRUCT(BlueprintType)
-struct FWeaponData
-{
-    GENERATED_USTRUCT_BODY()
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-    TSubclassOf<AVDBaseWeapon> WeaponClass;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-    UAnimMontage* ReloadAnimMontage;
-};
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class SHOOTTHEMUP_API UVDWeaponComponent : public UActorComponent
@@ -78,21 +67,4 @@ private:
 
     void OnEmptyClip();
     void ChangeClip();
-
-    template<typename T>
-    T* FindNotifyByClass(UAnimSequenceBase* Animation)
-    {
-        if(!Animation) return nullptr;
-        
-        const auto NotifyEvents = Animation->Notifies;
-        for(auto NotifyEvent : NotifyEvents)
-        {
-            auto AnimNotify = Cast<T>(NotifyEvent.Notify);
-            if(AnimNotify)
-            {
-                return AnimNotify;
-            }
-        }
-        return nullptr;
-    }
 };

@@ -6,8 +6,11 @@
 #include "GameFramework/Character.h"
 #include "Animations/VDEquipFinishedAnimNotify.h"
 #include "Animations/VDReloadFinishedAnimNotify.h"
+#include "Animations/AnimUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
+
+constexpr static int32 WeaponNum = 2;
 
 UVDWeaponComponent::UVDWeaponComponent()
 {
@@ -18,6 +21,8 @@ void UVDWeaponComponent::BeginPlay()
 {
     Super::BeginPlay();
 
+    checkf(WeaponData.Num() == WeaponNum, TEXT("Our character can hold only %i weapon items"), WeaponNum);
+    
     CurrentWeaponIndex = 0;
     InitAnimations();
     SpawnWeapons();
@@ -122,16 +127,25 @@ void UVDWeaponComponent::PlayAnimMontage(UAnimMontage* Animation)
 
 void UVDWeaponComponent::InitAnimations()
 {
-    auto EquipFinishedNotify = FindNotifyByClass<UVDEquipFinishedAnimNotify>(EquipAnimMontage);
+    auto EquipFinishedNotify = AnimUtils::FindNotifyByClass<UVDEquipFinishedAnimNotify>(EquipAnimMontage);
     if(EquipFinishedNotify)
     {
         EquipFinishedNotify->OnNotified.AddUObject(this, &UVDWeaponComponent::OnEquipFinished);
     }
+    else
+    {
+        UE_LOG(LogWeaponComponent, Error, TEXT("Equip anim notify if forgotten to set"));
+        checkNoEntry();
+    }
 
     for(auto OneWeaponData : WeaponData)
     {
-        auto ReloadFinishedNotify = FindNotifyByClass<UVDReloadFinishedAnimNotify>(OneWeaponData.ReloadAnimMontage);
-        if(!ReloadFinishedNotify) continue;
+        auto ReloadFinishedNotify = AnimUtils::FindNotifyByClass<UVDReloadFinishedAnimNotify>(OneWeaponData.ReloadAnimMontage);
+        if(!ReloadFinishedNotify)
+        {
+            UE_LOG(LogWeaponComponent, Error, TEXT("Reload anim notify if forgotten to set"));
+            checkNoEntry();
+        }
         ReloadFinishedNotify->OnNotified.AddUObject(this, &UVDWeaponComponent::OnReloadFinished);
     }
 }

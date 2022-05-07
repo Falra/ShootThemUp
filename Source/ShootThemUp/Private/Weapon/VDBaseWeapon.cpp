@@ -22,7 +22,11 @@ AVDBaseWeapon::AVDBaseWeapon()
 void AVDBaseWeapon::BeginPlay()
 {
     Super::BeginPlay();
+
     check(WeaponMesh);
+    checkf(DefaultAmmo.Bullets > 0, TEXT("Bullets count couldn't be less or equal 0"));
+    checkf(DefaultAmmo.Clips > 0, TEXT("Clips count couldn't be less or equal 0"));
+    
     CurrentAmmo = DefaultAmmo;
 }
 
