@@ -3,7 +3,6 @@
 
 #include "Weapon/VDLauncherWeapon.h"
 #include "Weapon/VDProjectile.h"
-#include "Kismet/GameplayStatics.h"
 
 void AVDLauncherWeapon::StartFire()
 {
@@ -12,8 +11,22 @@ void AVDLauncherWeapon::StartFire()
 
 void AVDLauncherWeapon::MakeShot()
 {
+    if(!GetWorld()) return;
+
+    FVector TraceStart, TraceEnd;
+    if(!GetTraceData(TraceStart, TraceEnd)) return;
+    
+    FHitResult HitResult;
+    MakeHit(HitResult, TraceStart, TraceEnd);
+
+    const FVector EndPoint = HitResult.bBlockingHit ? HitResult.ImpactPoint : TraceEnd;
+    const FVector Direction = (EndPoint - GetMuzzleWorldLocation()).GetSafeNormal();
+    
     const FTransform SpawnTransform(FRotator::ZeroRotator, GetMuzzleWorldLocation());
-    auto Projectile = UGameplayStatics::BeginDeferredActorSpawnFromClass(GetWorld(), ProjectileClass, SpawnTransform);
-    // TODO: Set projectile params
-    UGameplayStatics::FinishSpawningActor(Projectile, SpawnTransform);
+    AVDProjectile* Projectile = GetWorld()->SpawnActorDeferred<AVDProjectile>(ProjectileClass, SpawnTransform);
+    if(Projectile)
+    {
+        Projectile->SetShotDirection(Direction);
+        Projectile->FinishSpawning(SpawnTransform);
+    }
 }

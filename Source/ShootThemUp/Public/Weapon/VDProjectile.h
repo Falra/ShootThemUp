@@ -7,6 +7,7 @@
 #include "VDProjectile.generated.h"
 
 class USphereComponent;
+class UProjectileMovementComponent;
 
 UCLASS()
 class SHOOTTHEMUP_API AVDProjectile : public AActor
@@ -15,10 +16,16 @@ class SHOOTTHEMUP_API AVDProjectile : public AActor
 
 public:
     AVDProjectile();
-
+    void SetShotDirection(const FVector& Direction) { ShotDirection = Direction; };
+    
 protected:
     UPROPERTY(VisibleDefaultsOnly, Category = "Weapon")
     USphereComponent* CollisionComponent;
+
+    UPROPERTY(VisibleDefaultsOnly, Category = "Weapon")
+    UProjectileMovementComponent* MovementComponent;
     
     virtual void BeginPlay() override;
+private:
+    FVector ShotDirection;
 };
