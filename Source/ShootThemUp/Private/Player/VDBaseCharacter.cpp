@@ -83,6 +83,7 @@ void AVDBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
     PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &UVDWeaponComponent::StopFire);
     
     PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, WeaponComponent, &UVDWeaponComponent::NextWeapon);
+    PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &UVDWeaponComponent::Reload);
 }
 
 bool AVDBaseCharacter::IsRunning() const
