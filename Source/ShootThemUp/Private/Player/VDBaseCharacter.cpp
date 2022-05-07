@@ -81,6 +81,8 @@ void AVDBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
     PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &UVDWeaponComponent::StartFire);
     PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &UVDWeaponComponent::StopFire);
+    
+    PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, WeaponComponent, &UVDWeaponComponent::NextWeapon);
 }
 
 bool AVDBaseCharacter::IsRunning() const
@@ -137,6 +139,7 @@ void AVDBaseCharacter::OnDeath()
         Controller->ChangeState(NAME_Spectating);
     }
     GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+    WeaponComponent->StopFire();
 }
 
 void AVDBaseCharacter::OnHealthChanged(float NewHealth)

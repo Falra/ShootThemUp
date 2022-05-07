@@ -14,23 +14,37 @@ void UVDWeaponComponent::BeginPlay()
 {
     Super::BeginPlay();
 
-    SpawnWeapon();
+    CurrentWeaponIndex = 0;
+    SpawnWeapons();
+    EquipWeapon(CurrentWeaponIndex);
 }
 
-void UVDWeaponComponent::SpawnWeapon()
+void UVDWeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-    if(!GetWorld()) return;
+    CurrentWeapon = nullptr;
+    for (const auto Weapon : Weapons)
+    {
+        Weapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+        Weapon->Destroy();
+    }
+    Weapons.Empty();
 
+    Super::EndPlay(EndPlayReason);
+}
+
+void UVDWeaponComponent::SpawnWeapons()
+{
     ACharacter* Character = Cast<ACharacter>(GetOwner());
-    if (!Character) return;
+    if (!Character || !GetWorld()) return;
 
-    CurrentWeapon = GetWorld()->SpawnActor<AVDBaseWeapon>(WeaponClass);
-    if(!CurrentWeapon) return;
-    
-    const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
-    WeaponSocketName = "WeaponPoint";
-    CurrentWeapon->AttachToComponent(Character->GetMesh(), AttachmentRules, WeaponSocketName);
-    CurrentWeapon->SetOwner(Character);
+    for (auto WeaponClass : WeaponClasses)
+    {
+        auto Weapon = GetWorld()->SpawnActor<AVDBaseWeapon>(WeaponClass);
+        if(!Weapon) continue;
+        Weapon->SetOwner(Character);
+        Weapons.Add(Weapon);
+        AttachWeaponToSocket(Weapon, Character->GetMesh(), WeaponArmorySocketName);
+    }
 }
 
 void UVDWeaponComponent::StartFire()
@@ -43,4 +57,33 @@ void UVDWeaponComponent::StopFire()
 {
     if(!CurrentWeapon) return;
     CurrentWeapon->StopFire();
+}
+
+void UVDWeaponComponent::NextWeapon()
+{
+    CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
+    EquipWeapon(CurrentWeaponIndex);
+}
+
+void UVDWeaponComponent::AttachWeaponToSocket(AVDBaseWeapon* Weapon, USceneComponent* SceneComponent, const FName& SocketName)
+{
+    if(!Weapon || !SceneComponent) return;
+    
+    const FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
+    Weapon->AttachToComponent(SceneComponent, AttachmentRules, SocketName);
+}
+
+void UVDWeaponComponent::EquipWeapon(int32 WeaponIndex)
+{
+    ACharacter* Character = Cast<ACharacter>(GetOwner());
+    if (!Character) return;
+
+    if(CurrentWeapon)
+    {
+        CurrentWeapon->StopFire();
+        AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), WeaponArmorySocketName);
+    }
+    
+    CurrentWeapon = Weapons[WeaponIndex];
+    AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), WeaponEquipSocketName);
 }
