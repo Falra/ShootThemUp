@@ -6,12 +6,20 @@
 #include "Weapon/VDBaseWeapon.h"
 #include "VDLauncherWeapon.generated.h"
 
+class AVDProjectile;
+
 /**
  * 
  */
 UCLASS()
 class SHOOTTHEMUP_API AVDLauncherWeapon : public AVDBaseWeapon
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+public:
+    virtual void StartFire() override;
+protected:
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    TSubclassOf<AVDProjectile> ProjectileClass;
+    
+    virtual void MakeShot() override;
 };
