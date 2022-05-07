@@ -46,6 +46,7 @@ void UVDWeaponComponent::SpawnWeapons()
     {
         auto Weapon = GetWorld()->SpawnActor<AVDBaseWeapon>(OneWeaponData.WeaponClass);
         if(!Weapon) continue;
+        Weapon->OnClipEmpty.AddUObject(this, &UVDWeaponComponent::OnEmptyClip);
         Weapon->SetOwner(Character);
         Weapons.Add(Weapon);
         AttachWeaponToSocket(Weapon, Character->GetMesh(), WeaponArmorySocketName);
@@ -70,13 +71,6 @@ void UVDWeaponComponent::NextWeapon()
     
     CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
     EquipWeapon(CurrentWeaponIndex);
-}
-
-void UVDWeaponComponent::Reload()
-{
-    if(!CanReload()) return;
-    ReloadAnimInProgress = true;
-    PlayAnimMontage(CurrentReloadAnimMontage);
 }
 
 void UVDWeaponComponent::AttachWeaponToSocket(AVDBaseWeapon* Weapon, USceneComponent* SceneComponent, const FName& SocketName)
@@ -170,5 +164,29 @@ bool UVDWeaponComponent::CanEquip() const
 
 bool UVDWeaponComponent::CanReload() const
 {
-    return CurrentWeapon && !EquipAnimInProgress && !ReloadAnimInProgress; 
+    return CurrentWeapon            //
+           && !EquipAnimInProgress  //
+           && !ReloadAnimInProgress //
+           && CurrentWeapon->CanReload(); 
+}
+
+void UVDWeaponComponent::Reload()
+{
+    ChangeClip();
+}
+
+void UVDWeaponComponent::OnEmptyClip()
+{
+    ChangeClip();
+}
+
+void UVDWeaponComponent::ChangeClip()
+{
+    if(!CanReload()) return;
+
+    CurrentWeapon->StopFire();
+    CurrentWeapon->ChangeClip();
+    
+    ReloadAnimInProgress = true;
+    PlayAnimMontage(CurrentReloadAnimMontage);
 }

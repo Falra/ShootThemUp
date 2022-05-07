@@ -7,8 +7,8 @@
 
 void AVDRifleWeapon::StartFire()
 {
-    MakeShot();
     GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &AVDRifleWeapon::MakeShot, TimeBetweenShots, true);
+    MakeShot();
 }
 
 void AVDRifleWeapon::StopFire()
