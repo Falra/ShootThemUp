@@ -80,11 +80,3 @@ void AVDBaseWeapon::MakeHit(FHitResult& HitResult, const FVector& TraceStart, co
 
     GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility, CollisionParams);
 }
-
-void AVDBaseWeapon::MakeDamage(const FHitResult& HitResult)
-{
-    const auto DamagedActor = HitResult.GetActor();
-    if(!DamagedActor) return;
-
-    DamagedActor->TakeDamage(DamageAmount, FDamageEvent(), GetPLayerController(), this);
-}
