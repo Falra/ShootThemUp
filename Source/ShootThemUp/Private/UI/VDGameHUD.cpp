@@ -9,7 +9,7 @@ void AVDGameHUD::DrawHUD()
 {
     Super::DrawHUD();
 
-    DrawCrossHair();
+    //DrawCrossHair();
 }
 
 void AVDGameHUD::BeginPlay()

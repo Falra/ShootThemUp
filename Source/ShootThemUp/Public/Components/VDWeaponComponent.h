@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "VDBaseWeapon.h"
 #include "VDCoreTypes.h"
 #include "Components/ActorComponent.h"
 #include "VDWeaponComponent.generated.h"
@@ -21,6 +22,8 @@ public:
     void StopFire();
     void NextWeapon();
     void Reload();
+
+    bool GetWeaponUIData(FWeaponUIData& UIData) const;
 
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
