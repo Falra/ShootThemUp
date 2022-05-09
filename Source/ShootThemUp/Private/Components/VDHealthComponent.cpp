@@ -12,6 +12,19 @@ UVDHealthComponent::UVDHealthComponent()
     PrimaryComponentTick.bCanEverTick = false;
 }
 
+bool UVDHealthComponent::TryToAddHealth(float HealthAmount)
+{
+    if(IsDead() || IsHealthFull()) return false;
+
+    SetHealth(Health + HealthAmount);
+    return true;
+}
+
+bool UVDHealthComponent::IsHealthFull() const
+{
+    return FMath::IsNearlyEqual(Health, MaxHealth);
+}
+
 void UVDHealthComponent::BeginPlay()
 {
     Super::BeginPlay();
@@ -51,7 +64,7 @@ void UVDHealthComponent::HealUpdate()
 {
     SetHealth(Health + HealModifier);
     
-    if(FMath::IsNearlyEqual(Health, MaxHealth) && GetWorld())
+    if(IsHealthFull() && GetWorld())
     {
         GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
     }
