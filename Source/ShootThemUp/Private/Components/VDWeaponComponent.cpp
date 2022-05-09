@@ -51,7 +51,7 @@ void UVDWeaponComponent::SpawnWeapons()
     {
         auto Weapon = GetWorld()->SpawnActor<AVDBaseWeapon>(OneWeaponData.WeaponClass);
         if(!Weapon) continue;
-        Weapon->OnClipEmpty.AddUObject(this, &UVDWeaponComponent::OnEmptyClip);
+        Weapon->OnClipEmpty.AddUObject(this, &UVDWeaponComponent::OnClipEmpty);
         Weapon->SetOwner(Character);
         Weapons.Add(Weapon);
         AttachWeaponToSocket(Weapon, Character->GetMesh(), WeaponArmorySocketName);
@@ -209,9 +209,36 @@ bool UVDWeaponComponent::GetCurrentWeaponAmmoData(FAmmoData& AmmoData) const
     return false;
 }
 
-void UVDWeaponComponent::OnEmptyClip()
+bool UVDWeaponComponent::TryToAddAmmo(const TSubclassOf<AVDBaseWeapon>& WeaponType, int32 ClipsAmount)
 {
-    ChangeClip();
+    for(const auto Weapon : Weapons)
+    {
+        if(Weapon && Weapon->IsA(WeaponType))
+        {
+            return Weapon->TryToAddAmmo(ClipsAmount);
+        }
+    }
+    return false;
+}
+
+void UVDWeaponComponent::OnClipEmpty(AVDBaseWeapon* AmmoEmptyWeapon)
+{
+    if(!AmmoEmptyWeapon) return;
+    
+    if(CurrentWeapon == AmmoEmptyWeapon)
+    {
+        ChangeClip();
+    }
+    else
+    {
+        for(const auto Weapon : Weapons)
+        {
+            if (AmmoEmptyWeapon == Weapon)
+            {
+                Weapon->ChangeClip();
+            }
+        }
+    }
 }
 
 void UVDWeaponComponent::ChangeClip()

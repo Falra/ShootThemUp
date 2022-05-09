@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "VDAmmoPickup.h"
 #include "VDBaseWeapon.h"
 #include "VDCoreTypes.h"
 #include "Components/ActorComponent.h"
@@ -25,6 +26,8 @@ public:
 
     bool GetCurrentWeaponUIData(FWeaponUIData& UIData) const;
     bool GetCurrentWeaponAmmoData(FAmmoData& AmmoData) const;
+    
+    bool TryToAddAmmo(const TSubclassOf<AVDBaseWeapon>& WeaponType, int32 ClipsAmount);
 
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
@@ -69,6 +72,6 @@ private:
     bool CanEquip() const;
     bool CanReload() const;
 
-    void OnEmptyClip();
+    void OnClipEmpty(AVDBaseWeapon* AmmoEmptyWeapon);
     void ChangeClip();
 };
