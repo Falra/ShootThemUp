@@ -7,10 +7,7 @@
 
 float UVDPlayerHUDWidget::GetHealthPercent() const
 {
-    const auto Player = GetOwningPlayerPawn();
-    if(!Player) return 0.0f;
-
-    const auto HealthComp = Player->FindComponentByClass<UVDHealthComponent>();
+    const auto HealthComp = GetHealthComponent();
     if(!HealthComp) return 0.0f;
     
     return HealthComp->GetHealthPercent();
@@ -32,6 +29,19 @@ bool UVDPlayerHUDWidget::GetCurrentWeaponAmmoData(FAmmoData& AmmoData) const
     return WeaponComp->GetCurrentWeaponAmmoData(AmmoData);
 }
 
+bool UVDPlayerHUDWidget::IsPlayerAlive() const
+{
+    const auto HealthComp = GetHealthComponent();
+    return HealthComp && !HealthComp->IsDead();
+    
+}
+
+bool UVDPlayerHUDWidget::IsPlayerSpectating() const
+{
+    const auto Controller = GetOwningPlayer();
+    return Controller && Controller->GetStateName() == NAME_Spectating;
+}
+
 UVDWeaponComponent* UVDPlayerHUDWidget::GetWeaponComponent() const
 {
     const auto Player = GetOwningPlayerPawn();
@@ -39,4 +49,13 @@ UVDWeaponComponent* UVDPlayerHUDWidget::GetWeaponComponent() const
 
     const auto WeaponComp = Player->FindComponentByClass<UVDWeaponComponent>();
     return WeaponComp;
+}
+
+UVDHealthComponent* UVDPlayerHUDWidget::GetHealthComponent() const
+{
+    const auto Player = GetOwningPlayerPawn();
+    if(!Player) return nullptr;
+
+    const auto HealthComp = Player->FindComponentByClass<UVDHealthComponent>();
+    return HealthComp;
 }
