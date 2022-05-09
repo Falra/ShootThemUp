@@ -22,6 +22,8 @@ AVDBasePickup::AVDBasePickup()
 void AVDBasePickup::BeginPlay()
 {
     Super::BeginPlay();
+
+    check(CollisionComponent);
 }
 
 void AVDBasePickup::NotifyActorBeginOverlap(AActor* OtherActor)
@@ -29,10 +31,25 @@ void AVDBasePickup::NotifyActorBeginOverlap(AActor* OtherActor)
     Super::NotifyActorBeginOverlap(OtherActor);
 
     UE_LOG(LogBasePickup, Display, TEXT("Pickup overlap"));
-    Destroy();
+    PickupWasTaken();
 }
 
 void AVDBasePickup::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+}
+
+void AVDBasePickup::PickupWasTaken()
+{
+    CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+    GetRootComponent()->SetVisibility(false, true);
+
+    FTimerHandle RespawnTimerHandle;
+    GetWorldTimerManager().SetTimer(RespawnTimerHandle, this, &AVDBasePickup::Respawn, RespawnTime);
+}
+
+void AVDBasePickup::Respawn()
+{
+    GetRootComponent()->SetVisibility(true, true);
+    CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 }
