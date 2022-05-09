@@ -7,6 +7,8 @@
 #include "VDCoreTypes.h"
 #include "VDPlayerHUDWidget.generated.h"
 
+class UVDWeaponComponent;
+
 UCLASS()
 class SHOOTTHEMUP_API UVDPlayerHUDWidget : public UUserWidget
 {
@@ -17,5 +19,11 @@ public:
     float GetHealthPercent() const;
 
     UFUNCTION(BlueprintCallable, Category = "UI")
-    bool GetWeaponUIData(FWeaponUIData& UIData) const;
+    bool GetCurrentWeaponUIData(FWeaponUIData& UIData) const;
+
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    bool GetCurrentWeaponAmmoData(FAmmoData& AmmoData) const;
+
+private:
+    UVDWeaponComponent* GetWeaponComponent() const;
 };

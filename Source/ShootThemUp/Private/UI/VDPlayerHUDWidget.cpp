@@ -16,13 +16,27 @@ float UVDPlayerHUDWidget::GetHealthPercent() const
     return HealthComp->GetHealthPercent();
 }
 
-bool UVDPlayerHUDWidget::GetWeaponUIData(FWeaponUIData& UIData) const
+bool UVDPlayerHUDWidget::GetCurrentWeaponUIData(FWeaponUIData& UIData) const
 {
-    const auto Player = GetOwningPlayerPawn();
-    if(!Player) return false;
-
-    const auto WeaponComp = Player->FindComponentByClass<UVDWeaponComponent>();
+    const auto WeaponComp = GetWeaponComponent();
     if(!WeaponComp) return false;
 
-    return WeaponComp->GetWeaponUIData(UIData);
+    return WeaponComp->GetCurrentWeaponUIData(UIData);
+}
+
+bool UVDPlayerHUDWidget::GetCurrentWeaponAmmoData(FAmmoData& AmmoData) const
+{
+    const auto WeaponComp = GetWeaponComponent();
+    if(!WeaponComp) return false;
+
+    return WeaponComp->GetCurrentWeaponAmmoData(AmmoData);
+}
+
+UVDWeaponComponent* UVDPlayerHUDWidget::GetWeaponComponent() const
+{
+    const auto Player = GetOwningPlayerPawn();
+    if(!Player) return nullptr;
+
+    const auto WeaponComp = Player->FindComponentByClass<UVDWeaponComponent>();
+    return WeaponComp;
 }
