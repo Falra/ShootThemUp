@@ -6,12 +6,11 @@
 #include "Pickups/VDBasePickup.h"
 #include "VDAmmoPickup.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class SHOOTTHEMUP_API AVDAmmoPickup : public AVDBasePickup
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
+private:
+    virtual bool GivePickupTo(APawn* PlayerPawn) override;
 };

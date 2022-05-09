@@ -30,13 +30,21 @@ void AVDBasePickup::NotifyActorBeginOverlap(AActor* OtherActor)
 {
     Super::NotifyActorBeginOverlap(OtherActor);
 
-    UE_LOG(LogBasePickup, Display, TEXT("Pickup overlap"));
-    PickupWasTaken();
+    const auto Pawn = Cast<APawn>(OtherActor);
+    if(GivePickupTo(Pawn))
+    {
+        PickupWasTaken();
+    }
 }
 
 void AVDBasePickup::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+}
+
+bool AVDBasePickup::GivePickupTo(APawn* PlayerPawn)
+{
+    return false;
 }
 
 void AVDBasePickup::PickupWasTaken()

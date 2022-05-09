@@ -30,6 +30,7 @@ public:
     virtual void Tick(float DeltaTime) override;
 
 private:
+    virtual bool GivePickupTo(APawn* PlayerPawn);
     void PickupWasTaken();
     void Respawn();
 };
