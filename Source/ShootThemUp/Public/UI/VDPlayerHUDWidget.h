@@ -7,9 +7,6 @@
 #include "VDCoreTypes.h"
 #include "VDPlayerHUDWidget.generated.h"
 
-class UVDWeaponComponent;
-class UVDHealthComponent;
-
 UCLASS()
 class SHOOTTHEMUP_API UVDPlayerHUDWidget : public UUserWidget
 {
@@ -30,8 +27,4 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "UI")
     bool IsPlayerSpectating() const;
-
-private:
-    UVDWeaponComponent* GetWeaponComponent() const;
-    UVDHealthComponent* GetHealthComponent() const;
 };
