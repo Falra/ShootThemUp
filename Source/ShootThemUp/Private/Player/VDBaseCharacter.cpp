@@ -48,7 +48,7 @@ void AVDBaseCharacter::BeginPlay()
     check(HealthTextComponent);
     check(GetCharacterMovement());
 
-    OnHealthChanged(HealthComponent->GetHealth());
+    OnHealthChanged(HealthComponent->GetHealth(), 0.0f);
     HealthComponent->OnDeath.AddUObject(this, &AVDBaseCharacter::OnDeath);
     HealthComponent->OnHealthChanged.AddUObject(this, &AVDBaseCharacter::OnHealthChanged);
 
@@ -165,7 +165,7 @@ void AVDBaseCharacter::OnDeath()
     GetMesh()->SetSimulatePhysics(true);
 }
 
-void AVDBaseCharacter::OnHealthChanged(float NewHealth)
+void AVDBaseCharacter::OnHealthChanged(float NewHealth, float DeltaHealth)
 {
     HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), NewHealth)));
 }

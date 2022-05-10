@@ -42,3 +42,22 @@ bool UVDPlayerHUDWidget::IsPlayerSpectating() const
     const auto Controller = GetOwningPlayer();
     return Controller && Controller->GetStateName() == NAME_Spectating;
 }
+
+bool UVDPlayerHUDWidget::Initialize()
+{
+    const auto HealthComp = VDUtils::GetVDPlayerComponent<UVDHealthComponent>(GetOwningPlayerPawn());
+    if(HealthComp)
+    {
+        HealthComp->OnHealthChanged.AddUObject(this, &UVDPlayerHUDWidget::OnHealthChanged);
+    }
+    
+    return Super::Initialize();
+}
+
+void UVDPlayerHUDWidget::OnHealthChanged(float NewHealth, float DeltaHealth)
+{
+    if (DeltaHealth < 0.0f)
+    {
+        OnTakeDamage();
+    }
+}
