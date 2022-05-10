@@ -32,10 +32,17 @@ void AVDBaseWeapon::BeginPlay()
 
 void AVDBaseWeapon::StartFire()
 {
+    FireInProgress = true;
 }
 
 void AVDBaseWeapon::StopFire()
 {
+    FireInProgress = false;
+}
+
+bool AVDBaseWeapon::IsFiring() const
+{
+    return FireInProgress;
 }
 
 void AVDBaseWeapon::MakeShot()

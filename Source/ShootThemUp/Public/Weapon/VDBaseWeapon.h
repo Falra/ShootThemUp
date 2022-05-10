@@ -21,6 +21,7 @@ public:
     
     virtual void StartFire();
     virtual void StopFire();
+    bool IsFiring() const;
 
     void ChangeClip();
     bool CanReload() const;
@@ -45,6 +46,8 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
     FWeaponUIData UIData;
+
+    bool FireInProgress = false;
     
     virtual void BeginPlay() override;
 

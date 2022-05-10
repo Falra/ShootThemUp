@@ -6,6 +6,7 @@
 
 void AVDLauncherWeapon::StartFire()
 {
+    Super::StartFire();
     MakeShot();
 }
 
@@ -32,4 +33,5 @@ void AVDLauncherWeapon::MakeShot()
     }
 
     DecreaseAmmo();
+    StopFire();
 }

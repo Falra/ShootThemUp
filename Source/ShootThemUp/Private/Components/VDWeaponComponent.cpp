@@ -70,6 +70,11 @@ void UVDWeaponComponent::StopFire()
     CurrentWeapon->StopFire();
 }
 
+bool UVDWeaponComponent::IsFiring() const
+{
+    return CurrentWeapon && CurrentWeapon->IsFiring();
+}
+
 void UVDWeaponComponent::NextWeapon()
 {
     if(!CanEquip()) return;

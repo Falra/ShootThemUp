@@ -21,6 +21,7 @@ public:
 
     void StartFire();
     void StopFire();
+    bool IsFiring() const;
     void NextWeapon();
     void Reload();
 

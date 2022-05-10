@@ -75,6 +75,7 @@ private:
 
     void OnStartRunning();
     void OnStopRunning();
+    void OnStartFire();
 
     void OnDeath();
     void OnHealthChanged(float NewHealth);

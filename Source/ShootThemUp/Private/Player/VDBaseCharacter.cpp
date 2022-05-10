@@ -44,6 +44,7 @@ void AVDBaseCharacter::BeginPlay()
     Super::BeginPlay();
 
     check(HealthComponent);
+    check(WeaponComponent);
     check(HealthTextComponent);
     check(GetCharacterMovement());
 
@@ -79,7 +80,7 @@ void AVDBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
     PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AVDBaseCharacter::OnStartRunning);
     PlayerInputComponent->BindAction("Run", IE_Released, this, &AVDBaseCharacter::OnStopRunning);
 
-    PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &UVDWeaponComponent::StartFire);
+    PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AVDBaseCharacter::OnStartFire);
     PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &UVDWeaponComponent::StopFire);
     
     PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, WeaponComponent, &UVDWeaponComponent::NextWeapon);
@@ -107,6 +108,10 @@ void AVDBaseCharacter::MoveForward(float Amount)
     IsMovingForward = Amount > 0.0f;
     if (Amount == 0.0f) return;
     AddMovementInput(GetActorForwardVector(), Amount);
+    if (IsRunning() && WeaponComponent->IsFiring())
+    {
+        WeaponComponent->StopFire();
+    }
 }
 
 void AVDBaseCharacter::MoveRight(float Amount)
@@ -118,11 +123,21 @@ void AVDBaseCharacter::MoveRight(float Amount)
 void AVDBaseCharacter::OnStartRunning()
 {
     WantsToRun = true;
+    if (IsRunning())
+    {
+        WeaponComponent->StopFire();
+    }
 }
 
 void AVDBaseCharacter::OnStopRunning()
 {
     WantsToRun = false;
+}
+
+void AVDBaseCharacter::OnStartFire()
+{
+    if (IsRunning()) return;
+    WeaponComponent->StartFire();
 }
 
 void AVDBaseCharacter::OnDeath()
