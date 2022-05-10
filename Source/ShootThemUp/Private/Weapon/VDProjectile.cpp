@@ -4,6 +4,7 @@
 #include "Weapon/VDProjectile.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Components/VDWeaponFXComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -19,12 +20,18 @@ AVDProjectile::AVDProjectile()
     MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("MovementComponent");
     MovementComponent->InitialSpeed = 2000.0f;
     MovementComponent->ProjectileGravityScale = 0.0f;
+
+    WeaponFXComponent = CreateDefaultSubobject<UVDWeaponFXComponent>("WeaponFXComponent");
 }
 
 void AVDProjectile::BeginPlay()
 {
     Super::BeginPlay();
+
     check(MovementComponent);
+    check(CollisionComponent);
+    check(WeaponFXComponent);
+    
     MovementComponent->Velocity = ShotDirection * MovementComponent->InitialSpeed;
     CollisionComponent->IgnoreActorWhenMoving(GetOwner(), true);
     CollisionComponent->OnComponentHit.AddDynamic(this, &AVDProjectile::OnProjectileHit);
@@ -49,7 +56,7 @@ void AVDProjectile::OnProjectileHit(UPrimitiveComponent* PrimitiveComponent, AAc
         DoFullDamage);
 
     DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 24, FColor::Red, false, 5.0f);
-    
+    WeaponFXComponent->PlayImpactFX(HitResult);
     Destroy();
 }
 

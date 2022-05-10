@@ -3,7 +3,13 @@
 
 #include "Weapon/VDRifleWeapon.h"
 #include "DrawDebugHelpers.h"
+#include "Components/VDWeaponFXComponent.h"
 #include "Engine/World.h"
+
+AVDRifleWeapon::AVDRifleWeapon()
+{
+    WeaponFXComponent = CreateDefaultSubobject<UVDWeaponFXComponent>("WeaponFXComponent");
+}
 
 void AVDRifleWeapon::StartFire()
 {
@@ -15,6 +21,13 @@ void AVDRifleWeapon::StartFire()
 void AVDRifleWeapon::StopFire()
 {
     GetWorldTimerManager().ClearTimer(ShotTimerHandle);
+}
+
+void AVDRifleWeapon::BeginPlay()
+{
+    Super::BeginPlay();
+
+    check(WeaponFXComponent);
 }
 
 void AVDRifleWeapon::MakeShot()
@@ -39,8 +52,9 @@ void AVDRifleWeapon::MakeShot()
     if(HitResult.bBlockingHit)
     {
         MakeDamage(HitResult);
-        DrawDebugLine(GetWorld(), MuzzleLocation, HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.0f);
-        DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
+        //DrawDebugLine(GetWorld(), MuzzleLocation, HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.0f);
+        //DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
+        WeaponFXComponent->PlayImpactFX(HitResult);
     }
     else
     {
