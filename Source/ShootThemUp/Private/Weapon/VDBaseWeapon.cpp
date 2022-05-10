@@ -89,6 +89,7 @@ void AVDBaseWeapon::MakeHit(FHitResult& HitResult, const FVector& TraceStart, co
 
     FCollisionQueryParams CollisionParams;
     CollisionParams.AddIgnoredActor(GetOwner());
+    CollisionParams.bReturnPhysicalMaterial = true;
 
     GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility, CollisionParams);
 }
