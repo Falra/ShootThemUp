@@ -67,7 +67,11 @@ void AVDBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
     check(PlayerInputComponent);
+    check(HealthComponent);
+    check(HealthTextComponent);
     check(WeaponComponent);
+    check(GetCharacterMovement());
+    check(GetMesh());
 
     PlayerInputComponent->BindAxis("MoveForward", this, &AVDBaseCharacter::MoveForward);
     PlayerInputComponent->BindAxis("MoveRight", this, &AVDBaseCharacter::MoveRight);
@@ -144,7 +148,7 @@ void AVDBaseCharacter::OnDeath()
 {
     UE_LOG(BaseCharacterLog, Display, TEXT("YOU DEAD!!!"));
 
-    PlayAnimMontage(DeathAnimMontage);
+    //PlayAnimMontage(DeathAnimMontage);
 
     GetCharacterMovement()->DisableMovement();
 
@@ -156,6 +160,9 @@ void AVDBaseCharacter::OnDeath()
     }
     GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
     WeaponComponent->StopFire();
+
+    GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    GetMesh()->SetSimulatePhysics(true);
 }
 
 void AVDBaseCharacter::OnHealthChanged(float NewHealth)
