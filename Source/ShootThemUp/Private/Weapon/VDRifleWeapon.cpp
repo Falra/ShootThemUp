@@ -5,6 +5,7 @@
 #include "DrawDebugHelpers.h"
 #include "Components/VDWeaponFXComponent.h"
 #include "Engine/World.h"
+#include "NiagaraComponent.h"
 
 AVDRifleWeapon::AVDRifleWeapon()
 {
@@ -14,6 +15,7 @@ AVDRifleWeapon::AVDRifleWeapon()
 void AVDRifleWeapon::StartFire()
 {
     Super::StartFire();
+    InitMuzzleFX();
     GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &AVDRifleWeapon::MakeShot, TimeBetweenShots, true);
     MakeShot();
 }
@@ -21,6 +23,7 @@ void AVDRifleWeapon::StartFire()
 void AVDRifleWeapon::StopFire()
 {
     GetWorldTimerManager().ClearTimer(ShotTimerHandle);
+    SetMuzzleFXVisibility(false);
 }
 
 void AVDRifleWeapon::BeginPlay()
@@ -83,4 +86,22 @@ void AVDRifleWeapon::MakeDamage(const FHitResult& HitResult)
     if(!DamagedActor) return;
 
     DamagedActor->TakeDamage(DamageAmount, FDamageEvent(), GetPLayerController(), this);
+}
+
+void AVDRifleWeapon::InitMuzzleFX()
+{
+    if(!MuzzleFXComponent)
+    {
+        MuzzleFXComponent = SpawnMuzzleFX();
+    }
+    SetMuzzleFXVisibility(true);
+}
+
+void AVDRifleWeapon::SetMuzzleFXVisibility(bool Visible)
+{
+    if(MuzzleFXComponent)
+    {
+        MuzzleFXComponent->SetPaused(!Visible);
+        MuzzleFXComponent->SetVisibility(Visible, true);
+    }
 }

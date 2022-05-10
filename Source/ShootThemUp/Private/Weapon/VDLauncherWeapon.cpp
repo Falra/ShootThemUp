@@ -33,5 +33,6 @@ void AVDLauncherWeapon::MakeShot()
     }
 
     DecreaseAmmo();
+    SpawnMuzzleFX();
     StopFire();
 }

@@ -8,6 +8,8 @@
 #include "VDBaseWeapon.generated.h"
 
 class USkeletalMeshComponent;
+class UNiagaraSystem;
+class UNiagaraComponent;
 
 UCLASS()
 class SHOOTTHEMUP_API AVDBaseWeapon : public AActor
@@ -47,6 +49,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
     FWeaponUIData UIData;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+    UNiagaraSystem* MuzzleFX;
+    
     bool FireInProgress = false;
     
     virtual void BeginPlay() override;
@@ -65,6 +70,8 @@ protected:
     bool IsAmmoFull() const;
     
     void LogAmmo();
+
+    UNiagaraComponent* SpawnMuzzleFX();
     
 private:
     FTimerHandle ShotTimerHandle;
