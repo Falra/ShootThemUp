@@ -6,6 +6,8 @@
 #include "Player/VDBaseCharacter.h"
 #include "VDAICharacter.generated.h"
 
+class UBehaviorTree;
+
 UCLASS()
 class SHOOTTHEMUP_API AVDAICharacter : public AVDBaseCharacter
 {
@@ -13,4 +15,7 @@ class SHOOTTHEMUP_API AVDAICharacter : public AVDBaseCharacter
 
 public:
     AVDAICharacter(const FObjectInitializer& ObjInit);
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
+    UBehaviorTree* BehaviorTreeAsset;
 };
