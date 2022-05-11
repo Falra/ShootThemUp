@@ -10,4 +10,7 @@ UCLASS()
 class SHOOTTHEMUP_API UVDAIPerceptionComponent : public UAIPerceptionComponent
 {
     GENERATED_BODY()
+
+public:
+    AActor* GetClosestEnemy() const;
 };

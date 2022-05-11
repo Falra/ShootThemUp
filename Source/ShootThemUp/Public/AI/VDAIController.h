@@ -21,4 +21,5 @@ protected:
     UVDAIPerceptionComponent* VDAIPerceptionComponent;
     
     virtual void OnPossess(APawn* InPawn) override;
+    virtual void Tick(float DeltaSeconds) override;
 };

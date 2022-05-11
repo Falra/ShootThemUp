@@ -4,7 +4,7 @@ class VDUtils
 {
 public:
     template<typename T>
-    static T* GetVDPlayerComponent(APawn* PlayerPawn)
+    static T* GetVDPlayerComponent(AActor* PlayerPawn)
     {
         if(!PlayerPawn) return nullptr;
 

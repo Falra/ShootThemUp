@@ -21,3 +21,10 @@ void AVDAIController::OnPossess(APawn* InPawn)
         RunBehaviorTree(VDCharacter->BehaviorTreeAsset);
     }
 }
+
+void AVDAIController::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+    const auto AimActor = VDAIPerceptionComponent->GetClosestEnemy();
+    SetFocus(AimActor);
+}
