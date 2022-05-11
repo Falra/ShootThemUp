@@ -10,4 +10,7 @@ UCLASS()
 class SHOOTTHEMUP_API AVDAICharacter : public AVDBaseCharacter
 {
     GENERATED_BODY()
+
+public:
+    AVDAICharacter(const FObjectInitializer& ObjInit);
 };
