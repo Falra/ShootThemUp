@@ -3,6 +3,13 @@
 
 #include "AI/VDAIController.h"
 #include "AI/VDAICharacter.h"
+#include "Components/VDAIPerceptionComponent.h"
+
+AVDAIController::AVDAIController()
+{
+    VDAIPerceptionComponent = CreateDefaultSubobject<UVDAIPerceptionComponent>("VDAIPerceptionComponent");
+    SetPerceptionComponent(*VDAIPerceptionComponent);
+}
 
 void AVDAIController::OnPossess(APawn* InPawn)
 {
