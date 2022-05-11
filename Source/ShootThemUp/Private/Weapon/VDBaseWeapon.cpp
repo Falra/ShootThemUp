@@ -61,10 +61,22 @@ APlayerController* AVDBaseWeapon::GetPLayerController() const
 
 bool AVDBaseWeapon::GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const
 {
-    const auto Controller = GetPLayerController();
-    if(!Controller) return false;
+    const auto VDCharacter = Cast<ACharacter>(GetOwner());
+    if(!VDCharacter) return false;
 
-    Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
+    if(VDCharacter->IsPlayerControlled())
+    {
+        const auto Controller = GetPLayerController();
+        if(!Controller) return false;
+
+        Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
+    }
+    else
+    {
+        ViewLocation = GetMuzzleWorldLocation();
+        ViewRotation = WeaponMesh->GetSocketRotation(MuzzleSocketName);
+    }
+    
     return  true;
 }
 
