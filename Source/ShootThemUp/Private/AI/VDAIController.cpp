@@ -4,6 +4,7 @@
 #include "AI/VDAIController.h"
 #include "AI/VDAICharacter.h"
 #include "Components/VDAIPerceptionComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 AVDAIController::AVDAIController()
 {
@@ -25,6 +26,13 @@ void AVDAIController::OnPossess(APawn* InPawn)
 void AVDAIController::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-    const auto AimActor = VDAIPerceptionComponent->GetClosestEnemy();
+    const auto AimActor = GetFocusOnActor();
     SetFocus(AimActor);
+}
+
+AActor* AVDAIController::GetFocusOnActor() const
+{
+    if(!GetBlackboardComponent()) return nullptr;
+
+    return Cast<AActor>(GetBlackboardComponent()->GetValueAsObject(FocusOnKeyName));
 }
