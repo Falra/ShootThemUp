@@ -19,10 +19,10 @@ class SHOOTTHEMUP_API UVDWeaponComponent : public UActorComponent
 public:
     UVDWeaponComponent();
 
-    void StartFire();
+    virtual void StartFire();
     void StopFire();
     bool IsFiring() const;
-    void NextWeapon();
+    virtual void NextWeapon();
     void Reload();
 
     bool GetCurrentWeaponUIData(FWeaponUIData& UIData) const;
@@ -40,37 +40,39 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     FName WeaponArmorySocketName = "ArmorySocket";
 
-    UPROPERTY(EditDefaultsOnly, Category = "Animation")
-    UAnimMontage* EquipAnimMontage;
-    
-    virtual void BeginPlay() override;
-    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-private:
     UPROPERTY()
     AVDBaseWeapon* CurrentWeapon = nullptr;
 
     UPROPERTY()
     TArray<AVDBaseWeapon*> Weapons;
+    
+    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    UAnimMontage* EquipAnimMontage;
 
+    int32 CurrentWeaponIndex = 0;
+    
+    bool CanFire() const;
+    bool CanEquip() const;
+    void EquipWeapon(int32 WeaponIndex);
+
+    virtual void BeginPlay() override;
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+private:
     UPROPERTY()
     UAnimMontage* CurrentReloadAnimMontage = nullptr;
 
-    int32 CurrentWeaponIndex = 0;
     bool EquipAnimInProgress = false;
     bool ReloadAnimInProgress = false;
         
     void SpawnWeapons();
     void AttachWeaponToSocket(AVDBaseWeapon* Weapon, USceneComponent* SceneComponent, const FName& SocketName);
-    void EquipWeapon(int32 WeaponIndex);
-
+    
     void PlayAnimMontage(UAnimMontage* Animation);
     void InitAnimations();
     void OnEquipFinished(USkeletalMeshComponent* MeshComp);
     void OnReloadFinished(USkeletalMeshComponent* MeshComp);
 
-    bool CanFire() const;
-    bool CanEquip() const;
     bool CanReload() const;
 
     void OnClipEmpty(AVDBaseWeapon* AmmoEmptyWeapon);
