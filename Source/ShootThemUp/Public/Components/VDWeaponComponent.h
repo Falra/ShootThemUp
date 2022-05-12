@@ -6,6 +6,7 @@
 #include "VDAmmoPickup.h"
 #include "VDBaseWeapon.h"
 #include "VDCoreTypes.h"
+#include "VDNeedAmmoDecorator.h"
 #include "Components/ActorComponent.h"
 #include "VDWeaponComponent.generated.h"
 
@@ -29,6 +30,7 @@ public:
     bool GetCurrentWeaponAmmoData(FAmmoData& AmmoData) const;
     
     bool TryToAddAmmo(const TSubclassOf<AVDBaseWeapon>& WeaponType, int32 ClipsAmount);
+    bool NeedAmmo(const TSubclassOf<AVDBaseWeapon>& WeaponType);
 
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")

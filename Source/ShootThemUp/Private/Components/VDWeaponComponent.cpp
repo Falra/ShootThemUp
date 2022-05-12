@@ -226,6 +226,18 @@ bool UVDWeaponComponent::TryToAddAmmo(const TSubclassOf<AVDBaseWeapon>& WeaponTy
     return false;
 }
 
+bool UVDWeaponComponent::NeedAmmo(const TSubclassOf<AVDBaseWeapon>& WeaponType)
+{
+    for(const auto Weapon : Weapons)
+    {
+        if(Weapon && Weapon->IsA(WeaponType))
+        {
+            return !Weapon->IsAmmoFull();
+        }
+    }
+    return false;
+}
+
 void UVDWeaponComponent::OnClipEmpty(AVDBaseWeapon* AmmoEmptyWeapon)
 {
     if(!AmmoEmptyWeapon) return;
