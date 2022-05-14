@@ -17,6 +17,8 @@ class SHOOTTHEMUP_API AVDGameModeBase : public AGameModeBase
 public:
     AVDGameModeBase();
 
+    FOnMatchStateChangedSignature OnMatchStateChanged;
+    
     virtual void StartPlay() override;
     virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 
@@ -39,6 +41,7 @@ protected:
     FGameData GameData;
 
 private:
+    EVDMatchState MatchState = EVDMatchState::WaitingToStart;
     int32 CurrentRound = 1;
     int32 RoundCountDown = 0;
     FTimerHandle GameRoundTimerHandle;
@@ -56,7 +59,8 @@ private:
 
     void StartRespawn(AController* Controller) const;
 
-    void GameOver() const;
+    void GameOver();
     
     void LogPlayerInfo() const;
+    void SetMatchState(EVDMatchState State);
 };

@@ -33,6 +33,8 @@ void AVDGameModeBase::StartPlay()
     
     CurrentRound = 1;
     StartRound();
+
+    SetMatchState(EVDMatchState::InProgress);
 }
 
 UClass* AVDGameModeBase::GetDefaultPawnClassForController_Implementation(AController* InController)
@@ -197,7 +199,7 @@ void AVDGameModeBase::StartRespawn(AController* Controller) const
     RespawnComponent->Respawn(GameData.RespawnTime);
 }
 
-void AVDGameModeBase::GameOver() const
+void AVDGameModeBase::GameOver()
 {
     UE_LOG(LogVDGameModeBase, Display, TEXT("======= GAME OVER ======="));
     LogPlayerInfo();
@@ -210,9 +212,19 @@ void AVDGameModeBase::GameOver() const
             Pawn->DisableInput(nullptr);
         }
     }
+
+    SetMatchState(EVDMatchState::GameOver);
 }
 
 void AVDGameModeBase::RespawnRequest(AController* Controller)
 {
     ResetOnePlayer(Controller);
+}
+
+void AVDGameModeBase::SetMatchState(EVDMatchState State)
+{
+    if(MatchState == State) return;
+    
+    MatchState = State;
+    OnMatchStateChanged.Broadcast(MatchState);
 }
