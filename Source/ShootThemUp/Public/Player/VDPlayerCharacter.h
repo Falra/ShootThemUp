@@ -8,6 +8,7 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class USphereComponent;
 
 UCLASS()
 class SHOOTTHEMUP_API AVDPlayerCharacter : public AVDBaseCharacter
@@ -24,7 +25,11 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UCameraComponent* CameraComponent;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    USphereComponent* CameraCollisionComponent;
+    
     virtual void OnDeath() override;
+    virtual void BeginPlay() override;
 
 public:
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -40,5 +45,13 @@ private:
 
     void OnStartRunning();
     void OnStopRunning();
-    void OnStartFire();    
+    void OnStartFire();
+
+    void CheckCameraOverlap();
+
+    UFUNCTION()
+    void OnCameraCollisionBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int OtherBodyIndex, bool bFromSweep, const FHitResult& HitResult);
+    UFUNCTION()
+    void OnCameraCollisionEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int OtherBodyIndex);
+    
 };

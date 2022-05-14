@@ -7,6 +7,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 
 AVDPlayerCharacter::AVDPlayerCharacter(const FObjectInitializer& ObjInit) : Super(ObjInit)
 {
@@ -20,6 +22,19 @@ AVDPlayerCharacter::AVDPlayerCharacter(const FObjectInitializer& ObjInit) : Supe
     CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
     CameraComponent->SetupAttachment(SpringArmComponent);
 
+    CameraCollisionComponent = CreateDefaultSubobject<USphereComponent>("CameraCollisionComponent");
+    CameraCollisionComponent->SetupAttachment(CameraComponent);
+    CameraCollisionComponent->SetSphereRadius(10.0f);
+    CameraCollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+}
+
+void AVDPlayerCharacter::BeginPlay()
+{
+    Super::BeginPlay();
+
+    check(CameraCollisionComponent);
+    CameraCollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AVDPlayerCharacter::OnCameraCollisionBeginOverlap);
+    CameraCollisionComponent->OnComponentEndOverlap.AddDynamic(this, &AVDPlayerCharacter::OnCameraCollisionEndOverlap);
 }
 
 void AVDPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -90,6 +105,24 @@ void AVDPlayerCharacter::OnStartFire()
 {
     if (IsRunning()) return;
     WeaponComponent->StartFire();
+}
+
+void AVDPlayerCharacter::CheckCameraOverlap()
+{
+    const auto HideMesh = CameraCollisionComponent->IsOverlappingComponent(GetCapsuleComponent());
+    GetMesh()->SetOwnerNoSee(HideMesh);
+}
+
+void AVDPlayerCharacter::OnCameraCollisionBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+    UPrimitiveComponent* OtherComp, int OtherBodyIndex, bool bFromSweep, const FHitResult& HitResult)
+{
+    CheckCameraOverlap();
+}
+
+void AVDPlayerCharacter::OnCameraCollisionEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+    UPrimitiveComponent* OtherComp, int OtherBodyIndex)
+{
+    CheckCameraOverlap();
 }
 
 void AVDPlayerCharacter::OnDeath()
