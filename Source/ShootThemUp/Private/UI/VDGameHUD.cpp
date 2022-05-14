@@ -3,7 +3,10 @@
 
 #include "UI/VDGameHUD.h"
 #include "Engine/Canvas.h"
+#include "VDGameModeBase.h"
 #include "Blueprint/UserWidget.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogVDGameHUD, All, All);
 
 void AVDGameHUD::DrawHUD()
 {
@@ -15,10 +18,19 @@ void AVDGameHUD::DrawHUD()
 void AVDGameHUD::BeginPlay()
 {
     Super::BeginPlay();
-    auto PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass);
+    const auto PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass);
     if(PlayerHUDWidget)
     {
         PlayerHUDWidget->AddToViewport();
+    }
+
+    if(GetWorld())
+    {
+        const auto GameMode = Cast<AVDGameModeBase>(GetWorld()->GetAuthGameMode());
+        if(GameMode)
+        {
+            GameMode->OnMatchStateChanged.AddUObject(this, &AVDGameHUD::OnMatchStateChanged);
+        }
     }
 }
 
@@ -31,4 +43,9 @@ void AVDGameHUD::DrawCrossHair()
 
     DrawLine(Center.Min - HalfLineSize, Center.Max, Center.Min + HalfLineSize, Center.Max, LineColor, LineThickness);
     DrawLine(Center.Min, Center.Max - HalfLineSize, Center.Min, Center.Max + HalfLineSize, LineColor, LineThickness);
+}
+
+void AVDGameHUD::OnMatchStateChanged(EVDMatchState MatchState)
+{
+    UE_LOG(LogVDGameHUD, Display, TEXT("Match state changed: %s"), *UEnum::GetValueAsString(MatchState));
 }
