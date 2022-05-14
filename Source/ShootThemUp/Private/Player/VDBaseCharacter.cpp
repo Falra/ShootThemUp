@@ -5,47 +5,26 @@
 
 #include "Components/VDWeaponComponent.h"
 #include "Components/VDHealthComponent.h"
-#include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Components/TextRenderComponent.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "Components/VDCharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
 
-// Sets default values
 AVDBaseCharacter::AVDBaseCharacter(const FObjectInitializer& ObjInit)
     : Super(ObjInit.SetDefaultSubobjectClass<UVDCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
-    // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
-
-    SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
-    SpringArmComponent->SetupAttachment(GetRootComponent());
-    SpringArmComponent->bUsePawnControlRotation = true;
-    SpringArmComponent->SocketOffset = FVector(0.0f, 100.0f, 80.0f);
-    
-    CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
-    CameraComponent->SetupAttachment(SpringArmComponent);
-
     HealthComponent = CreateDefaultSubobject<UVDHealthComponent>("HealthComponent");
-
-    HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
-    HealthTextComponent->SetupAttachment(GetRootComponent());
-    HealthTextComponent->SetOwnerNoSee(true);
-
     WeaponComponent = CreateDefaultSubobject<UVDWeaponComponent>("WeaponComponent");
 }
 
-// Called when the game starts or when spawned
 void AVDBaseCharacter::BeginPlay()
 {
     Super::BeginPlay();
 
     check(HealthComponent);
     check(WeaponComponent);
-    check(HealthTextComponent);
     check(GetCharacterMovement());
 
     OnHealthChanged(HealthComponent->GetHealth(), 0.0f);
@@ -55,45 +34,14 @@ void AVDBaseCharacter::BeginPlay()
     LandedDelegate.AddDynamic(this, &AVDBaseCharacter::OnGroundLanded);
 }
 
-// Called every frame
 void AVDBaseCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 }
 
-// Called to bind functionality to input
-void AVDBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-    Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-    check(PlayerInputComponent);
-    check(HealthComponent);
-    check(HealthTextComponent);
-    check(WeaponComponent);
-    check(GetCharacterMovement());
-    check(GetMesh());
-
-    PlayerInputComponent->BindAxis("MoveForward", this, &AVDBaseCharacter::MoveForward);
-    PlayerInputComponent->BindAxis("MoveRight", this, &AVDBaseCharacter::MoveRight);
-
-    PlayerInputComponent->BindAxis("LookUp", this, &AVDBaseCharacter::AddControllerPitchInput);
-    PlayerInputComponent->BindAxis("TurnAround", this, &AVDBaseCharacter::AddControllerYawInput);
-
-    PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AVDBaseCharacter::Jump);
-
-    PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AVDBaseCharacter::OnStartRunning);
-    PlayerInputComponent->BindAction("Run", IE_Released, this, &AVDBaseCharacter::OnStopRunning);
-
-    PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AVDBaseCharacter::OnStartFire);
-    PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &UVDWeaponComponent::StopFire);
-    
-    PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, WeaponComponent, &UVDWeaponComponent::NextWeapon);
-    PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &UVDWeaponComponent::Reload);
-}
-
 bool AVDBaseCharacter::IsRunning() const
 {
-    return WantsToRun && IsMovingForward && !GetVelocity().IsZero();
+    return false;
 }
 
 float AVDBaseCharacter::GetMovementDirection() const
@@ -115,43 +63,6 @@ void AVDBaseCharacter::SetPlayerColor(const FLinearColor& Color)
     MaterialInstance->SetVectorParameterValue(MaterialColorName, Color);
 }
 
-void AVDBaseCharacter::MoveForward(float Amount)
-{
-    IsMovingForward = Amount > 0.0f;
-    if (Amount == 0.0f) return;
-    AddMovementInput(GetActorForwardVector(), Amount);
-    if (IsRunning() && WeaponComponent->IsFiring())
-    {
-        WeaponComponent->StopFire();
-    }
-}
-
-void AVDBaseCharacter::MoveRight(float Amount)
-{
-    if (Amount == 0.0f) return;
-    AddMovementInput(GetActorRightVector(), Amount);
-}
-
-void AVDBaseCharacter::OnStartRunning()
-{
-    WantsToRun = true;
-    if (IsRunning())
-    {
-        WeaponComponent->StopFire();
-    }
-}
-
-void AVDBaseCharacter::OnStopRunning()
-{
-    WantsToRun = false;
-}
-
-void AVDBaseCharacter::OnStartFire()
-{
-    if (IsRunning()) return;
-    WeaponComponent->StartFire();
-}
-
 void AVDBaseCharacter::OnDeath()
 {
     UE_LOG(BaseCharacterLog, Display, TEXT("YOU DEAD!!!"));
@@ -162,10 +73,6 @@ void AVDBaseCharacter::OnDeath()
 
     SetLifeSpan(LifeSpanOnDeath);
 
-    if(Controller)
-    {
-        Controller->ChangeState(NAME_Spectating);
-    }
     GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
     WeaponComponent->StopFire();
 
@@ -175,7 +82,6 @@ void AVDBaseCharacter::OnDeath()
 
 void AVDBaseCharacter::OnHealthChanged(float NewHealth, float DeltaHealth)
 {
-    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), NewHealth)));
 }
 
 void AVDBaseCharacter::OnGroundLanded(const FHitResult& Hit)

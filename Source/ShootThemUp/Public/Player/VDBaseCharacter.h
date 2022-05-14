@@ -7,11 +7,8 @@
 #include "GameFramework/Character.h"
 #include "VDBaseCharacter.generated.h"
 
-class USpringArmComponent;
-class UCameraComponent;
 class UVDHealthComponent;
 class UVDWeaponComponent;
-class UTextRenderComponent;
 class UAnimMontage;
 
 UCLASS()
@@ -20,21 +17,11 @@ class SHOOTTHEMUP_API AVDBaseCharacter : public ACharacter
     GENERATED_BODY()
 
 public:
-    // Sets default values for this character's properties
     AVDBaseCharacter(const FObjectInitializer& ObjInit);
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    USpringArmComponent* SpringArmComponent;
-    
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UCameraComponent* CameraComponent;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UVDHealthComponent* HealthComponent;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UTextRenderComponent* HealthTextComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UVDWeaponComponent* WeaponComponent;
@@ -61,10 +48,8 @@ protected:
 public:
     virtual void Tick(float DeltaTime) override;
 
-    virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
     UFUNCTION(BlueprintCallable, Category = "Movement")
-    bool IsRunning() const;
+    virtual bool IsRunning() const;
 
     UFUNCTION(BlueprintCallable, Category = "Movement")
     float GetMovementDirection() const;
@@ -72,16 +57,6 @@ public:
     void SetPlayerColor(const FLinearColor& Color);
 
 private:
-    bool WantsToRun = false;
-    bool IsMovingForward = false;
-
-    void MoveForward(float Amount);
-    void MoveRight(float Amount);
-
-    void OnStartRunning();
-    void OnStopRunning();
-    void OnStartFire();
-
     void OnHealthChanged(float NewHealth, float DeltaHealth);
 
     UFUNCTION()
