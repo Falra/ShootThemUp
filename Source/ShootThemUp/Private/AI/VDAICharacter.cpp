@@ -10,7 +10,7 @@
 AVDAICharacter::AVDAICharacter(const FObjectInitializer& ObjInit)
     : Super(ObjInit.SetDefaultSubobjectClass<UVDAIWeaponComponent>("WeaponComponent"))
 {
-    AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+    AutoPossessAI = EAutoPossessAI::Disabled;
     AIControllerClass = AVDAIController::StaticClass();
 
     bUseControllerRotationYaw = false;

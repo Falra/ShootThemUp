@@ -10,6 +10,8 @@ AVDAIController::AVDAIController()
 {
     VDAIPerceptionComponent = CreateDefaultSubobject<UVDAIPerceptionComponent>("VDAIPerceptionComponent");
     SetPerceptionComponent(*VDAIPerceptionComponent);
+
+    bWantsPlayerState = true;
 }
 
 void AVDAIController::OnPossess(APawn* InPawn)
