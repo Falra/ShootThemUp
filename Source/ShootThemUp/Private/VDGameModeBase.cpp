@@ -22,6 +22,15 @@ void AVDGameModeBase::StartPlay()
     SpawnBots();
 }
 
+UClass* AVDGameModeBase::GetDefaultPawnClassForController_Implementation(AController* InController)
+{
+    if(InController && InController->IsA<AAIController>())
+    {
+        return AIPawnClass;
+    }
+    return Super::GetDefaultPawnClassForController_Implementation(InController);
+}
+
 void AVDGameModeBase::SpawnBots()
 {
     if(!GetWorld() || GameData.PlayersNum == 1) return;
@@ -31,6 +40,7 @@ void AVDGameModeBase::SpawnBots()
 
     for(int32 i = 0; i < GameData.PlayersNum - 1; ++i)
     {
-        GetWorld()->SpawnActor<AAIController>(AIControllerClass, SpawnInfo);
+        const auto SpawnAIController = GetWorld()->SpawnActor<AAIController>(AIControllerClass, SpawnInfo);
+        RestartPlayer(SpawnAIController);
     }
 }
