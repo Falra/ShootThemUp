@@ -69,6 +69,7 @@ void AVDGameModeBase::GameTimerUpdate()
 
         if(++CurrentRound <= GameData.RoundsNum)
         {
+            ResetPlayers();
             StartRound();
         }
         else
@@ -76,4 +77,24 @@ void AVDGameModeBase::GameTimerUpdate()
             UE_LOG(LogVDGameModeBase, Display, TEXT("======= GAME OVER ======="));
         }
     }
+}
+
+void AVDGameModeBase::ResetPlayers()
+{
+    if(!GetWorld()) return;
+
+    for(auto It = GetWorld()->GetControllerIterator(); It; ++It)
+    {
+        ResetOnePlayer(It->Get());
+    }
+}
+
+void AVDGameModeBase::ResetOnePlayer(AController* Controller)
+{
+    if(Controller && Controller->GetPawn())
+    {
+        Controller->GetPawn()->Reset();
+    }
+    
+    RestartPlayer(Controller);
 }
