@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "VDCoreTypes.h"
 #include "GameFramework/GameModeBase.h"
 #include "VDGameModeBase.generated.h"
 
-/**
- * 
- */
+class AAIController;
+
 UCLASS()
 class SHOOTTHEMUP_API AVDGameModeBase : public AGameModeBase
 {
@@ -16,4 +16,15 @@ class SHOOTTHEMUP_API AVDGameModeBase : public AGameModeBase
 
 public:
     AVDGameModeBase();
+    virtual void StartPlay() override;
+
+protected:
+    UPROPERTY(EditDefaultsOnly, Category = "Game")
+    TSubclassOf<AAIController> AIControllerClass;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Game")
+    FGameData GameData;
+
+private:
+    void SpawnBots();
 };
