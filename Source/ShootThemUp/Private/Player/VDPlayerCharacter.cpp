@@ -107,10 +107,19 @@ void AVDPlayerCharacter::OnStartFire()
     WeaponComponent->StartFire();
 }
 
-void AVDPlayerCharacter::CheckCameraOverlap()
+void AVDPlayerCharacter::CheckCameraOverlap() const
 {
     const auto HideMesh = CameraCollisionComponent->IsOverlappingComponent(GetCapsuleComponent());
     GetMesh()->SetOwnerNoSee(HideMesh);
+
+    TArray<USceneComponent*> MeshChildren;
+    GetMesh()->GetChildrenComponents(true, MeshChildren);
+    for(const auto MeshChild: MeshChildren)
+    {
+        const auto MeshChildGeometry = Cast<UPrimitiveComponent>(MeshChild);
+        if(!MeshChildGeometry) continue;
+        MeshChildGeometry->SetOwnerNoSee(HideMesh);
+    }
 }
 
 void AVDPlayerCharacter::OnCameraCollisionBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

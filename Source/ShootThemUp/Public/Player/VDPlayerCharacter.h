@@ -47,7 +47,7 @@ private:
     void OnStopRunning();
     void OnStartFire();
 
-    void CheckCameraOverlap();
+    void CheckCameraOverlap() const;
 
     UFUNCTION()
     void OnCameraCollisionBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int OtherBodyIndex, bool bFromSweep, const FHitResult& HitResult);
