@@ -81,7 +81,7 @@ void AVDRifleWeapon::MakeDamage(const FHitResult& HitResult)
     const auto DamagedActor = HitResult.GetActor();
     if(!DamagedActor) return;
 
-    DamagedActor->TakeDamage(DamageAmount, FDamageEvent(), GetPLayerController(), this);
+    DamagedActor->TakeDamage(DamageAmount, FDamageEvent(), GetController(), this);
 }
 
 void AVDRifleWeapon::InitMuzzleFX()
@@ -109,4 +109,10 @@ void AVDRifleWeapon::SpawnTraceFX(const FVector& TraceStart, const FVector& Trac
     {
         TraceFXComponent->SetNiagaraVariableVec3(TraceTargetName, TraceEnd);
     }
+}
+
+AController* AVDRifleWeapon::GetController() const
+{
+    const auto Pawn = Cast<APawn>(GetOwner());
+    return Pawn ? Pawn->GetController() : nullptr;
 }

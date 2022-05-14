@@ -39,6 +39,22 @@ UClass* AVDGameModeBase::GetDefaultPawnClassForController_Implementation(AContro
     return Super::GetDefaultPawnClassForController_Implementation(InController);
 }
 
+void AVDGameModeBase::Killed(AController* KillerController, AController* VictimController)
+{
+    const auto KillerPlayerState = KillerController ? KillerController->GetPlayerState<AVDPlayerState>() : nullptr;
+    const auto VictimPlayerState = VictimController ? VictimController->GetPlayerState<AVDPlayerState>() : nullptr;
+
+    if(KillerPlayerState)
+    {
+        KillerPlayerState->AddKill();
+    }
+
+    if(VictimPlayerState)
+    {
+        VictimPlayerState->AddDeath();
+    }
+}
+
 void AVDGameModeBase::SpawnBots()
 {
     if(!GetWorld() || GameData.PlayersNum == 1) return;
@@ -78,6 +94,7 @@ void AVDGameModeBase::GameTimerUpdate()
         else
         {
             UE_LOG(LogVDGameModeBase, Display, TEXT("======= GAME OVER ======="));
+            LogPlayerInfo();
         }
     }
 }
@@ -145,4 +162,20 @@ void AVDGameModeBase::SerPlayerColor(AController* Controller)
     if(!PlayerState) return;
 
     Character->SetPlayerColor(PlayerState->GetTeamColor());
+}
+
+void AVDGameModeBase::LogPlayerInfo() const
+{
+    if(!GetWorld()) return;
+
+    for(auto It = GetWorld()->GetControllerIterator(); It; ++It)
+    {
+        const auto Controller = It->Get();
+        if(!Controller) continue;
+
+        const auto PlayerState = Controller->GetPlayerState<AVDPlayerState>();
+        if(!PlayerState) continue;
+
+        PlayerState->LogInfo();
+    }
 }

@@ -7,7 +7,6 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/World.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/Controller.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 
@@ -51,14 +50,6 @@ void AVDBaseWeapon::MakeShot()
 {
 }
 
-APlayerController* AVDBaseWeapon::GetPLayerController() const
-{
-    const auto Player = Cast<ACharacter>(GetOwner());
-    if(!Player) return nullptr;
-
-    return Player->GetController<APlayerController>();
-}
-
 bool AVDBaseWeapon::GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const
 {
     const auto VDCharacter = Cast<ACharacter>(GetOwner());
@@ -66,7 +57,7 @@ bool AVDBaseWeapon::GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRota
 
     if(VDCharacter->IsPlayerControlled())
     {
-        const auto Controller = GetPLayerController();
+        const auto Controller = VDCharacter->GetController<APlayerController>();
         if(!Controller) return false;
 
         Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);

@@ -7,6 +7,7 @@
 #include "GameFramework/Controller.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
+#include "VDGameModeBase.h"
 #include "Camera/CameraShakeBase.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All);
@@ -56,6 +57,7 @@ void UVDHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, con
     
     if (IsDead())
     {
+        Killed(InstigatedBy);
         OnDeath.Broadcast();
     }
     else if (AutoHeal)
@@ -97,4 +99,16 @@ void UVDHealthComponent::PlayCameraShake()
     if(!Controller || !Controller->PlayerCameraManager) return;
 
     Controller->PlayerCameraManager->StartCameraShake(CameraShake);
+}
+
+void UVDHealthComponent::Killed(AController* KillerController) const
+{
+    if(!GetWorld()) return;
+    
+    const auto GameMode = Cast<AVDGameModeBase>(GetWorld()->GetAuthGameMode());
+    if(!GameMode) return;
+
+    const auto Player = Cast<APawn>(GetOwner());
+    const auto VictimController = Player ? Player->Controller : nullptr;
+    GameMode->Killed(KillerController, VictimController);
 }
