@@ -55,6 +55,8 @@ private:
     void SerPlayerColor(AController* Controller);
 
     void StartRespawn(AController* Controller) const;
+
+    void GameOver() const;
     
     void LogPlayerInfo() const;
 };

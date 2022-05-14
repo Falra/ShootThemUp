@@ -10,6 +10,7 @@
 #include "Player/VDPlayerController.h"
 #include "UI/VDGameHUD.h"
 #include "Player/VDPlayerState.h"
+#include "EngineUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogVDGameModeBase, All, All);
 
@@ -99,8 +100,7 @@ void AVDGameModeBase::GameTimerUpdate()
         }
         else
         {
-            UE_LOG(LogVDGameModeBase, Display, TEXT("======= GAME OVER ======="));
-            LogPlayerInfo();
+            GameOver();
         }
     }
 }
@@ -195,6 +195,21 @@ void AVDGameModeBase::StartRespawn(AController* Controller) const
     if(!RespawnComponent) return;
 
     RespawnComponent->Respawn(GameData.RespawnTime);
+}
+
+void AVDGameModeBase::GameOver() const
+{
+    UE_LOG(LogVDGameModeBase, Display, TEXT("======= GAME OVER ======="));
+    LogPlayerInfo();
+
+    for(const auto Pawn: TActorRange<APawn>(GetWorld()))
+    {
+        if(Pawn)
+        {
+            Pawn->TurnOff();
+            Pawn->DisableInput(nullptr);
+        }
+    }
 }
 
 void AVDGameModeBase::RespawnRequest(AController* Controller)
