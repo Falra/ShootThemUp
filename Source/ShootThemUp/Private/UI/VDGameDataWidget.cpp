@@ -38,7 +38,7 @@ int32 UVDGameDataWidget::GetTotalRoundsNum() const
     return GameMode->GetGameData().RoundsNum;
 }
 
-int32 UVDGameDataWidget::GerRoundSecondsRemaining() const
+int32 UVDGameDataWidget::GetRoundSecondsRemaining() const
 {
     const auto GameMode = GetGameMode();
     if(!GameMode) return 0;

@@ -24,7 +24,7 @@ public:
     UFUNCTION(BlueprintCallable, Category = "UI")
     int32 GetTotalRoundsNum() const;
     UFUNCTION(BlueprintCallable, Category = "UI")
-    int32 GerRoundSecondsRemaining() const;
+    int32 GetRoundSecondsRemaining() const;
 
 private:
     AVDGameModeBase* GetGameMode() const;
