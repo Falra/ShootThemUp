@@ -13,6 +13,8 @@
 
 DEFINE_LOG_CATEGORY_STATIC(LogVDGameModeBase, All, All);
 
+constexpr static int32 MinRoundTimeForRespawn = 10;
+
 AVDGameModeBase::AVDGameModeBase()
 {
     DefaultPawnClass = AVDBaseCharacter::StaticClass();
@@ -186,6 +188,9 @@ void AVDGameModeBase::LogPlayerInfo() const
 
 void AVDGameModeBase::StartRespawn(AController* Controller) const
 {
+    const auto RespawnAvailable = RoundCountDown > MinRoundTimeForRespawn + GameData.RespawnTime;
+    if(!RespawnAvailable) return;
+    
     const auto RespawnComponent = VDUtils::GetVDPlayerComponent<UVDRespawnComponent>(Controller);
     if(!RespawnComponent) return;
 
