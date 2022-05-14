@@ -6,11 +6,16 @@
 #include "GameFramework/PlayerController.h"
 #include "VDPlayerController.generated.h"
 
-/**
- * 
- */
+class UVDRespawnComponent;
+
 UCLASS()
 class SHOOTTHEMUP_API AVDPlayerController : public APlayerController
 {
     GENERATED_BODY()
+public:
+    AVDPlayerController();
+    
+protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UVDRespawnComponent* RespawnComponent;
 };

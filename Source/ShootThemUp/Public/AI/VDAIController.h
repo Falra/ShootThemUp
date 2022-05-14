@@ -7,6 +7,7 @@
 #include "VDAIController.generated.h"
 
 class UVDAIPerceptionComponent;
+class UVDRespawnComponent;
 
 UCLASS()
 class SHOOTTHEMUP_API AVDAIController : public AAIController
@@ -20,6 +21,9 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UVDAIPerceptionComponent* VDAIPerceptionComponent;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UVDRespawnComponent* RespawnComponent;
+    
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "AI")
     FName FocusOnKeyName = "EnemyActor";
     

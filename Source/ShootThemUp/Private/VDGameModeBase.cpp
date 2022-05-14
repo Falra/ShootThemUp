@@ -4,6 +4,8 @@
 #include "VDGameModeBase.h"
 
 #include "AIController.h"
+#include "VDRespawnComponent.h"
+#include "VDUtils.h"
 #include "Player/VDBaseCharacter.h"
 #include "Player/VDPlayerController.h"
 #include "UI/VDGameHUD.h"
@@ -53,6 +55,8 @@ void AVDGameModeBase::Killed(AController* KillerController, AController* VictimC
     {
         VictimPlayerState->AddDeath();
     }
+
+    StartRespawn(VictimController);
 }
 
 void AVDGameModeBase::SpawnBots()
@@ -178,4 +182,17 @@ void AVDGameModeBase::LogPlayerInfo() const
 
         PlayerState->LogInfo();
     }
+}
+
+void AVDGameModeBase::StartRespawn(AController* Controller) const
+{
+    const auto RespawnComponent = VDUtils::GetVDPlayerComponent<UVDRespawnComponent>(Controller);
+    if(!RespawnComponent) return;
+
+    RespawnComponent->Respawn(GameData.RespawnTime);
+}
+
+void AVDGameModeBase::RespawnRequest(AController* Controller)
+{
+    ResetOnePlayer(Controller);
 }

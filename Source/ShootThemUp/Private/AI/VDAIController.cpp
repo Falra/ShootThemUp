@@ -2,6 +2,8 @@
 
 
 #include "AI/VDAIController.h"
+
+#include "Components/VDRespawnComponent.h"
 #include "AI/VDAICharacter.h"
 #include "Components/VDAIPerceptionComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -11,6 +13,8 @@ AVDAIController::AVDAIController()
     VDAIPerceptionComponent = CreateDefaultSubobject<UVDAIPerceptionComponent>("VDAIPerceptionComponent");
     SetPerceptionComponent(*VDAIPerceptionComponent);
 
+    RespawnComponent = CreateDefaultSubobject<UVDRespawnComponent>("RespawnComponent");
+    
     bWantsPlayerState = true;
 }
 
