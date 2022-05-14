@@ -17,6 +17,11 @@ void UVDRespawnComponent::Respawn(int32 RespawnTime)
     GetWorld()->GetTimerManager().SetTimer(RespawnTimerHandle, this, &UVDRespawnComponent::RespawnTimerUpdate, 1.0f,  true);
 }
 
+bool UVDRespawnComponent::IsRespawnInProgress() const
+{
+    return GetWorld() && GetWorld()->GetTimerManager().IsTimerActive(RespawnTimerHandle);
+}
+
 void UVDRespawnComponent::RespawnTimerUpdate()
 {
     if(--RespawnCountDown == 0)
