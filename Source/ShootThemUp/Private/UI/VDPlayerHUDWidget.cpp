@@ -45,10 +45,10 @@ bool UVDPlayerHUDWidget::IsPlayerSpectating() const
 
 bool UVDPlayerHUDWidget::Initialize()
 {
-    const auto HealthComp = VDUtils::GetVDPlayerComponent<UVDHealthComponent>(GetOwningPlayerPawn());
-    if(HealthComp)
+    if(GetOwningPlayer())
     {
-        HealthComp->OnHealthChanged.AddUObject(this, &UVDPlayerHUDWidget::OnHealthChanged);
+        GetOwningPlayer()->GetOnNewPawnNotifier().AddUObject(this, &UVDPlayerHUDWidget::OnNewPawn);
+        OnNewPawn(GetOwningPlayerPawn());
     }
     
     return Super::Initialize();
@@ -59,5 +59,14 @@ void UVDPlayerHUDWidget::OnHealthChanged(float NewHealth, float DeltaHealth)
     if (DeltaHealth < 0.0f)
     {
         OnTakeDamage();
+    }
+}
+
+void UVDPlayerHUDWidget::OnNewPawn(APawn* NewPawn)
+{
+    const auto HealthComp = VDUtils::GetVDPlayerComponent<UVDHealthComponent>(NewPawn);
+    if(HealthComp)
+    {
+        HealthComp->OnHealthChanged.AddUObject(this, &UVDPlayerHUDWidget::OnHealthChanged);
     }
 }
