@@ -107,6 +107,14 @@ float AVDBaseCharacter::GetMovementDirection() const
     return CrossProduct.IsZero() ? RadiansToDegrees : RadiansToDegrees * FMath::Sign(CrossProduct.Z);
 }
 
+void AVDBaseCharacter::SetPlayerColor(const FLinearColor& Color)
+{
+    const auto MaterialInstance = GetMesh()->CreateAndSetMaterialInstanceDynamic(0);
+    if(!MaterialInstance) return;
+
+    MaterialInstance->SetVectorParameterValue(MaterialColorName, Color);
+}
+
 void AVDBaseCharacter::MoveForward(float Amount)
 {
     IsMovingForward = Amount > 0.0f;

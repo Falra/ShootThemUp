@@ -7,6 +7,7 @@
 #include "Player/VDBaseCharacter.h"
 #include "Player/VDPlayerController.h"
 #include "UI/VDGameHUD.h"
+#include "Player/VDPlayerState.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogVDGameModeBase, All, All);
 
@@ -15,6 +16,7 @@ AVDGameModeBase::AVDGameModeBase()
     DefaultPawnClass = AVDBaseCharacter::StaticClass();
     PlayerControllerClass = AVDPlayerController::StaticClass();
     HUDClass = AVDGameHUD::StaticClass();
+    PlayerStateClass = AVDPlayerState::StaticClass();
 }
 
 void AVDGameModeBase::StartPlay()
@@ -22,7 +24,8 @@ void AVDGameModeBase::StartPlay()
     Super::StartPlay();
 
     SpawnBots();
-
+    CreateTeamsInfo();
+    
     CurrentRound = 1;
     StartRound();
 }
@@ -97,4 +100,49 @@ void AVDGameModeBase::ResetOnePlayer(AController* Controller)
     }
     
     RestartPlayer(Controller);
+    SerPlayerColor(Controller);
+}
+
+void AVDGameModeBase::CreateTeamsInfo()
+{
+    if(!GetWorld()) return;
+
+    int32 TeamID = 1;
+    for(auto It = GetWorld()->GetControllerIterator(); It; ++It)
+    {
+        const auto Controller = It->Get();
+        if(!Controller) continue;
+
+        const auto PlayerState = Controller->GetPlayerState<AVDPlayerState>();
+        if(!PlayerState) continue;
+
+        PlayerState->SetTeamID(TeamID);
+        PlayerState->SetTeamColor(DetermineColorByTeamID(TeamID));
+        SerPlayerColor(Controller);
+        
+        TeamID = TeamID == 1 ? 2 : 1;
+    }
+}
+
+FLinearColor AVDGameModeBase::DetermineColorByTeamID(int32 TeamID) const
+{
+    if(TeamID - 1 < GameData.TeamColors.Num())
+    {
+        return GameData.TeamColors[TeamID - 1];
+    }
+    UE_LOG(LogVDGameModeBase, Warning, TEXT("No color for team ID: %i, set to default: %s"), TeamID, *GameData.DefaultTeamColor.ToString());
+    return GameData.DefaultTeamColor;;
+}
+
+void AVDGameModeBase::SerPlayerColor(AController* Controller)
+{
+    if(!Controller) return;
+
+    const auto Character = Cast<AVDBaseCharacter>(Controller->GetPawn());
+    if(!Character) return;
+
+    const auto PlayerState = Controller->GetPlayerState<AVDPlayerState>();
+    if(!PlayerState) return;
+
+    Character->SetPlayerColor(PlayerState->GetTeamColor());
 }
