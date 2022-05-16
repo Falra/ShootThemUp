@@ -4,6 +4,7 @@
 #include "Menu/UI/VDMenuWidget.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "VDGameInstance.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogVDMenuWidget, All, All);
@@ -15,6 +16,11 @@ void UVDMenuWidget::NativeOnInitialized()
     if(StartGameButton)
     {
         StartGameButton->OnClicked.AddDynamic(this, &UVDMenuWidget::OnStartGame);
+    }
+
+    if(QuitGameButton)
+    {
+        QuitGameButton->OnClicked.AddDynamic(this, &UVDMenuWidget::OnQuitGame);
     }
 }
 
@@ -31,4 +37,9 @@ void UVDMenuWidget::OnStartGame()
         return;
     }
     UGameplayStatics::OpenLevel(this, MyGameInstance->GetStartupLevelName());
+}
+
+void UVDMenuWidget::OnQuitGame()
+{
+    UKismetSystemLibrary::QuitGame(this, GetOwningPlayer(), EQuitPreference::Quit, true);
 }
