@@ -21,9 +21,9 @@ void AVDGameHUD::BeginPlay()
     
     GameWidgets.Add(EVDMatchState::InProgress, CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass));
     GameWidgets.Add(EVDMatchState::Pause, CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass));
-    //GameWidgets.Add(EVDMatchState::GameOver, nullptr);
-
-    for(auto GameWidgetPair: GameWidgets)
+    GameWidgets.Add(EVDMatchState::GameOver, CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass));
+    
+    for(const auto GameWidgetPair: GameWidgets)
     {
         const auto GameWidget = GameWidgetPair.Value;
         if(!GameWidget) continue;
