@@ -3,3 +3,10 @@
 
 #include "Menu/VDMenuPlayerController.h"
 
+void AVDMenuPlayerController::BeginPlay()
+{
+    Super::BeginPlay();
+
+    SetInputMode(FInputModeUIOnly());
+    bShowMouseCursor = true;
+}

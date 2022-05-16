@@ -6,12 +6,20 @@
 #include "Blueprint/UserWidget.h"
 #include "VDMenuWidget.generated.h"
 
-/**
- * 
- */
+class UButton;
+
 UCLASS()
 class SHOOTTHEMUP_API UVDMenuWidget : public UUserWidget
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
+protected:
+    UPROPERTY(meta = (BindWidget))
+    UButton* StartGameButton;
+    
+    virtual void NativeOnInitialized() override;
+
+private:
+    UFUNCTION()
+    void OnStartGame();
 };

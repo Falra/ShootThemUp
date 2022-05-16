@@ -6,12 +6,14 @@
 #include "GameFramework/HUD.h"
 #include "VDMenuHUD.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class SHOOTTHEMUP_API AVDMenuHUD : public AHUD
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+    
+protected:
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> MenuWidgetClass;
+    
+    virtual void BeginPlay() override;
 };

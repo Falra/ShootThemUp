@@ -6,12 +6,11 @@
 #include "GameFramework/PlayerController.h"
 #include "VDMenuPlayerController.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class SHOOTTHEMUP_API AVDMenuPlayerController : public APlayerController
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
+protected:
+    virtual void BeginPlay() override;
 };

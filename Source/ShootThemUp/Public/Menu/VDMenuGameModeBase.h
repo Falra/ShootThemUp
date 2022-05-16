@@ -6,12 +6,10 @@
 #include "GameFramework/GameModeBase.h"
 #include "VDMenuGameModeBase.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class SHOOTTHEMUP_API AVDMenuGameModeBase : public AGameModeBase
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+public:
+    AVDMenuGameModeBase();
 };
