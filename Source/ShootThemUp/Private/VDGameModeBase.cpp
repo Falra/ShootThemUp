@@ -29,8 +29,6 @@ void AVDGameModeBase::StartPlay()
 {
     Super::StartPlay();
 
-    UE_LOG(LogVDGameModeBase, Display, TEXT("%s"), *GetWorld()->GetGameInstance<UVDGameInstance>()->TestString);
-    
     SpawnBots();
     CreateTeamsInfo();
     

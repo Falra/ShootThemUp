@@ -11,5 +11,4 @@ void AVDMenuPlayerController::BeginPlay()
     SetInputMode(FInputModeUIOnly());
     bShowMouseCursor = true;
 
-    GetWorld()->GetGameInstance<UVDGameInstance>()->TestString = "Menu level says Hello!";
 }

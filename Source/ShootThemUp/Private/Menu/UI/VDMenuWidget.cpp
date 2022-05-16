@@ -4,6 +4,9 @@
 #include "Menu/UI/VDMenuWidget.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
+#include "VDGameInstance.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogVDMenuWidget, All, All);
 
 void UVDMenuWidget::NativeOnInitialized()
 {
@@ -17,6 +20,15 @@ void UVDMenuWidget::NativeOnInitialized()
 
 void UVDMenuWidget::OnStartGame()
 {
-    const FName StartupLevelName = "TestLevel";
-    UGameplayStatics::OpenLevel(this, StartupLevelName);
+    if(!GetWorld()) return;
+
+    const auto MyGameInstance = GetWorld()->GetGameInstance<UVDGameInstance>();
+    if(!MyGameInstance) return;
+
+    if(MyGameInstance->GetStartupLevelName().IsNone())
+    {
+        UE_LOG(LogVDMenuWidget, Error, TEXT("Level name is NONE"));
+        return;
+    }
+    UGameplayStatics::OpenLevel(this, MyGameInstance->GetStartupLevelName());
 }
