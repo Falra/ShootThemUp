@@ -43,15 +43,15 @@ bool UVDPlayerHUDWidget::IsPlayerSpectating() const
     return Controller && Controller->GetStateName() == NAME_Spectating;
 }
 
-bool UVDPlayerHUDWidget::Initialize()
+void UVDPlayerHUDWidget::NativeOnInitialized()
 {
+    Super::NativeOnInitialized();
+    
     if(GetOwningPlayer())
     {
         GetOwningPlayer()->GetOnNewPawnNotifier().AddUObject(this, &UVDPlayerHUDWidget::OnNewPawn);
         OnNewPawn(GetOwningPlayerPawn());
     }
-    
-    return Super::Initialize();
 }
 
 void UVDPlayerHUDWidget::OnHealthChanged(float NewHealth, float DeltaHealth)

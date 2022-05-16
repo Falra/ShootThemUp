@@ -7,9 +7,13 @@
 #include "Player/VDPlayerState.h"
 #include "UI/VDPlayerStatRowWidget.h"
 #include "Components/VerticalBox.h"
+#include "Components/Button.h"
+#include "Kismet/GameplayStatics.h"
 
-bool UVDGameOverWidget::Initialize()
+void UVDGameOverWidget::NativeOnInitialized()
 {
+    Super::NativeOnInitialized();
+
     if(GetWorld())
     {
         const auto GameMode = Cast<AVDGameModeBase>(GetWorld()->GetAuthGameMode());
@@ -18,8 +22,11 @@ bool UVDGameOverWidget::Initialize()
             GameMode->OnMatchStateChanged.AddUObject(this, &UVDGameOverWidget::OnMatchStateChanged);
         }
     }
-    
-    return Super::Initialize();
+
+    if(ResetLevelButton)
+    {
+        ResetLevelButton->OnClicked.AddDynamic(this, &UVDGameOverWidget::OnResetLevel);
+    }
 }
 
 void UVDGameOverWidget::OnMatchStateChanged(EVDMatchState State)
@@ -55,4 +62,11 @@ void UVDGameOverWidget::UpdatePlayerStat()
 
         PlayerStatBox->AddChild(PlayerStatRowWidget);
     }
+}
+
+void UVDGameOverWidget::OnResetLevel()
+{
+    // const FName CurrentLevelName = "TestLevel";
+    const FString CurrentLevelName = UGameplayStatics::GetCurrentLevelName(this);
+    UGameplayStatics::OpenLevel(this, FName(CurrentLevelName));
 }

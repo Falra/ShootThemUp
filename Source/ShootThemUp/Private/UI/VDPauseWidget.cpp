@@ -5,16 +5,14 @@
 #include "GameFramework/GameModeBase.h"
 #include "Components/Button.h"
 
-bool UVDPauseWidget::Initialize()
+void UVDPauseWidget::NativeOnInitialized()
 {
-    const auto InitStatus = Super::Initialize();
+    Super::NativeOnInitialized();
 
     if(ResumeGameButton)
     {
         ResumeGameButton->OnClicked.AddDynamic(this, &UVDPauseWidget::OnResumeGame);
     }
-    
-    return InitStatus;
 }
 
 void UVDPauseWidget::OnResumeGame()
