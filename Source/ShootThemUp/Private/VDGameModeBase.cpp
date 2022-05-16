@@ -221,6 +221,18 @@ void AVDGameModeBase::RespawnRequest(AController* Controller)
     ResetOnePlayer(Controller);
 }
 
+bool AVDGameModeBase::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate)
+{
+    const auto PauseSet = Super::SetPause(PC, CanUnpauseDelegate);
+
+    if(PauseSet)
+    {
+        SetMatchState(EVDMatchState::Pause);
+    }
+
+    return PauseSet;
+}
+
 void AVDGameModeBase::SetMatchState(EVDMatchState State)
 {
     if(MatchState == State) return;
