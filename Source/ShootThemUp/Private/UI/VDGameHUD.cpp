@@ -18,12 +18,20 @@ void AVDGameHUD::DrawHUD()
 void AVDGameHUD::BeginPlay()
 {
     Super::BeginPlay();
-    const auto PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass);
-    if(PlayerHUDWidget)
-    {
-        PlayerHUDWidget->AddToViewport();
-    }
+    
+    GameWidgets.Add(EVDMatchState::InProgress, CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass));
+    GameWidgets.Add(EVDMatchState::Pause, CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass));
+    //GameWidgets.Add(EVDMatchState::GameOver, nullptr);
 
+    for(auto GameWidgetPair: GameWidgets)
+    {
+        const auto GameWidget = GameWidgetPair.Value;
+        if(!GameWidget) continue;
+
+        GameWidget->AddToViewport();
+        GameWidget->SetVisibility(ESlateVisibility::Hidden);
+    }
+    
     if(GetWorld())
     {
         const auto GameMode = Cast<AVDGameModeBase>(GetWorld()->GetAuthGameMode());
@@ -47,5 +55,20 @@ void AVDGameHUD::DrawCrossHair()
 
 void AVDGameHUD::OnMatchStateChanged(EVDMatchState MatchState)
 {
+    if(CurrentWidget)
+    {
+        CurrentWidget->SetVisibility(ESlateVisibility::Hidden);
+    }
+
+    if(GameWidgets.Contains(MatchState))
+    {
+        CurrentWidget = GameWidgets[MatchState];
+    }
+
+    if(CurrentWidget)
+    {
+        CurrentWidget->SetVisibility(ESlateVisibility::Visible);
+    }
+    
     UE_LOG(LogVDGameHUD, Display, TEXT("Match state changed: %s"), *UEnum::GetValueAsString(MatchState));
 }
