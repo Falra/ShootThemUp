@@ -2,6 +2,7 @@
 
 
 #include "Menu/VDMenuPlayerController.h"
+#include "VDGameInstance.h"
 
 void AVDMenuPlayerController::BeginPlay()
 {
@@ -9,4 +10,6 @@ void AVDMenuPlayerController::BeginPlay()
 
     SetInputMode(FInputModeUIOnly());
     bShowMouseCursor = true;
+
+    GetWorld()->GetGameInstance<UVDGameInstance>()->TestString = "Menu level says Hello!";
 }

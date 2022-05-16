@@ -11,6 +11,7 @@
 #include "UI/VDGameHUD.h"
 #include "Player/VDPlayerState.h"
 #include "EngineUtils.h"
+#include "VDGameInstance.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogVDGameModeBase, All, All);
 
@@ -28,6 +29,8 @@ void AVDGameModeBase::StartPlay()
 {
     Super::StartPlay();
 
+    UE_LOG(LogVDGameModeBase, Display, TEXT("%s"), *GetWorld()->GetGameInstance<UVDGameInstance>()->TestString);
+    
     SpawnBots();
     CreateTeamsInfo();
     
