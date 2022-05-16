@@ -233,6 +233,18 @@ bool AVDGameModeBase::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDele
     return PauseSet;
 }
 
+bool AVDGameModeBase::ClearPause()
+{
+    const auto PauseCleared = Super::ClearPause();
+
+    if(PauseCleared)
+    {
+        SetMatchState(EVDMatchState::InProgress);
+    }
+    
+    return PauseCleared;
+}
+
 void AVDGameModeBase::SetMatchState(EVDMatchState State)
 {
     if(MatchState == State) return;

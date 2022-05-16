@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "VDCoreTypes.h"
 #include "GameFramework/PlayerController.h"
 #include "VDPlayerController.generated.h"
 
@@ -19,8 +20,10 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UVDRespawnComponent* RespawnComponent;
 
+    virtual void BeginPlay() override;
     virtual void SetupInputComponent() override;
 
 private:
     void OnPauseGame();
+    void OnMatchStateChanged(EVDMatchState State);
 };
