@@ -26,6 +26,13 @@ AVDAICharacter::AVDAICharacter(const FObjectInitializer& ObjInit)
     HealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("HealthWidgetComponent");
     HealthWidgetComponent->SetupAttachment(GetRootComponent());
     HealthWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+    HealthWidgetComponent->SetDrawAtDesiredSize(true);
+}
+
+void AVDAICharacter::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+    UpdateHealthWidgetVisibility();
 }
 
 void AVDAICharacter::BeginPlay()
@@ -54,4 +61,16 @@ void AVDAICharacter::OnHealthChanged(float NewHealth, float DeltaHealth)
     if(!HealthBarWidget) return;
 
     HealthBarWidget->SetHealthPercent(HealthComponent->GetHealthPercent());
+}
+
+void AVDAICharacter::UpdateHealthWidgetVisibility()
+{
+    if (!GetWorld() ||                                                 //
+        !GetWorld()->GetFirstPlayerController() ||                     //
+        !GetWorld()->GetFirstPlayerController()->GetPawnOrSpectator()) //
+        return;
+    
+    const auto PlayerLocation = GetWorld()->GetFirstPlayerController()->GetPawnOrSpectator()->GetActorLocation();
+    const auto Distance = FVector::Distance(PlayerLocation, GetActorLocation());
+    HealthWidgetComponent->SetVisibility(Distance < HealthVisibilityDistance ? true : false, true);
 }
