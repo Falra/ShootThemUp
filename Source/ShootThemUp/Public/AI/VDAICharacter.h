@@ -7,6 +7,7 @@
 #include "VDAICharacter.generated.h"
 
 class UBehaviorTree;
+class UWidgetComponent;
 
 UCLASS()
 class SHOOTTHEMUP_API AVDAICharacter : public AVDBaseCharacter
@@ -20,5 +21,10 @@ public:
     UBehaviorTree* BehaviorTreeAsset;
 
 protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UWidgetComponent* HealthWidgetComponent;
+
+    virtual void BeginPlay() override;
     virtual void OnDeath() override;
+    virtual void OnHealthChanged(float NewHealth, float DeltaHealth) override;
 };
