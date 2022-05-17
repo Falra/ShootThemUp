@@ -93,14 +93,14 @@ int32 UVDPlayerHUDWidget::GetDeathsNum() const
 
 FString UVDPlayerHUDWidget::FormatBullets(int32 BulletsNum) const
 {
-    const int32 MaxLen = 3;
-    const TCHAR PrefixSymbol = '0';
+    constexpr int32 MaxLen = 3;
 
     auto BulletStr = FString::FromInt(BulletsNum);
     const auto SymbolsNumToAdd = MaxLen - BulletStr.Len();
 
     if (SymbolsNumToAdd > 0)
     {
+        constexpr TCHAR PrefixSymbol = '0';
         BulletStr = FString::ChrN(SymbolsNumToAdd, PrefixSymbol).Append(BulletStr);
     }
 
