@@ -8,6 +8,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "VDGameInstance.h"
 #include "VDLevelItemWidget.h"
+#include "Sound/SoundCue.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogVDMenuWidget, All, All);
 
@@ -41,6 +42,7 @@ void UVDMenuWidget::OnAnimationFinished_Implementation(const UWidgetAnimation* A
 void UVDMenuWidget::OnStartGame()
 {
     PlayAnimation(HideAnimation);
+    UGameplayStatics::PlaySound2D(GetWorld(), StartGameSound);
 }
 
 void UVDMenuWidget::OnQuitGame()
