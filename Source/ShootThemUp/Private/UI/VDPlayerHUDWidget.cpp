@@ -60,6 +60,11 @@ void UVDPlayerHUDWidget::OnHealthChanged(float NewHealth, float DeltaHealth)
     if (DeltaHealth < 0.0f)
     {
         OnTakeDamage();
+
+        if(!IsAnimationPlaying(DamageAnimation))
+        {
+            PlayAnimation(DamageAnimation);
+        }
     }
     
     UpdateHealthBar();
