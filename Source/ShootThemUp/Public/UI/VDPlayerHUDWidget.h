@@ -3,15 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
 #include "VDCoreTypes.h"
+#include "UI/VDBaseWidget.h"
 #include "VDPlayerHUDWidget.generated.h"
 
 class UProgressBar;
 class AVDPlayerState;
 
 UCLASS()
-class SHOOTTHEMUP_API UVDPlayerHUDWidget : public UUserWidget
+class SHOOTTHEMUP_API UVDPlayerHUDWidget : public UVDBaseWidget
 {
     GENERATED_BODY()
 

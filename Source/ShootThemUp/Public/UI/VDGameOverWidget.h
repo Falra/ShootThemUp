@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "VDCoreTypes.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/VDBaseWidget.h"
 #include "VDGameOverWidget.generated.h"
 
 class UVerticalBox;
 class UButton;
 
 UCLASS()
-class SHOOTTHEMUP_API UVDGameOverWidget : public UUserWidget
+class SHOOTTHEMUP_API UVDGameOverWidget : public UVDBaseWidget
 {
     GENERATED_BODY()
 

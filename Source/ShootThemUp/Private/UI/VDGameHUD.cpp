@@ -2,6 +2,8 @@
 
 
 #include "UI/VDGameHUD.h"
+
+#include "VDBaseWidget.h"
 #include "Engine/Canvas.h"
 #include "VDGameModeBase.h"
 #include "Blueprint/UserWidget.h"
@@ -19,9 +21,9 @@ void AVDGameHUD::BeginPlay()
 {
     Super::BeginPlay();
     
-    GameWidgets.Add(EVDMatchState::InProgress, CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass));
-    GameWidgets.Add(EVDMatchState::Pause, CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass));
-    GameWidgets.Add(EVDMatchState::GameOver, CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass));
+    GameWidgets.Add(EVDMatchState::InProgress, CreateWidget<UVDBaseWidget>(GetWorld(), PlayerHUDWidgetClass));
+    GameWidgets.Add(EVDMatchState::Pause, CreateWidget<UVDBaseWidget>(GetWorld(), PauseWidgetClass));
+    GameWidgets.Add(EVDMatchState::GameOver, CreateWidget<UVDBaseWidget>(GetWorld(), GameOverWidgetClass));
     
     for(const auto GameWidgetPair: GameWidgets)
     {
@@ -68,6 +70,7 @@ void AVDGameHUD::OnMatchStateChanged(EVDMatchState MatchState)
     if(CurrentWidget)
     {
         CurrentWidget->SetVisibility(ESlateVisibility::Visible);
+        CurrentWidget->Show();
     }
     
     UE_LOG(LogVDGameHUD, Display, TEXT("Match state changed: %s"), *UEnum::GetValueAsString(MatchState));

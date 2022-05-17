@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/VDBaseWidget.h"
 #include "VDPauseWidget.generated.h"
 
 class UButton;
 
 UCLASS()
-class SHOOTTHEMUP_API UVDPauseWidget : public UUserWidget
+class SHOOTTHEMUP_API UVDPauseWidget : public UVDBaseWidget
 {
     GENERATED_BODY()
 

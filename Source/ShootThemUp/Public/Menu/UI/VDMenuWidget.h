@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "VDCoreTypes.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/VDBaseWidget.h"
 #include "VDMenuWidget.generated.h"
 
 class UButton;
@@ -13,7 +13,7 @@ class UVDGameInstance;
 class UVDLevelItemWidget;
 
 UCLASS()
-class SHOOTTHEMUP_API UVDMenuWidget : public UUserWidget
+class SHOOTTHEMUP_API UVDMenuWidget : public UVDBaseWidget
 {
     GENERATED_BODY()
 

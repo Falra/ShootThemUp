@@ -7,6 +7,8 @@
 #include "VDCoreTypes.h"
 #include "VDGameHUD.generated.h"
 
+class UVDBaseWidget;
+
 UCLASS()
 class SHOOTTHEMUP_API AVDGameHUD : public AHUD
 {
@@ -29,10 +31,10 @@ protected:
     
 private:
     UPROPERTY()
-    TMap<EVDMatchState, UUserWidget*> GameWidgets;
+    TMap<EVDMatchState, UVDBaseWidget*> GameWidgets;
 
     UPROPERTY()
-    UUserWidget* CurrentWidget = nullptr;
+    UVDBaseWidget* CurrentWidget = nullptr;
     
     void DrawCrossHair();
     void OnMatchStateChanged(EVDMatchState MatchState);
