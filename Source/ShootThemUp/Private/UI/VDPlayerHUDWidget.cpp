@@ -91,6 +91,22 @@ int32 UVDPlayerHUDWidget::GetDeathsNum() const
     return PlayerState->GetDeathsNum();
 }
 
+FString UVDPlayerHUDWidget::FormatBullets(int32 BulletsNum) const
+{
+    const int32 MaxLen = 3;
+    const TCHAR PrefixSymbol = '0';
+
+    auto BulletStr = FString::FromInt(BulletsNum);
+    const auto SymbolsNumToAdd = MaxLen - BulletStr.Len();
+
+    if (SymbolsNumToAdd > 0)
+    {
+        BulletStr = FString::ChrN(SymbolsNumToAdd, PrefixSymbol).Append(BulletStr);
+    }
+
+    return BulletStr;
+}
+
 void UVDPlayerHUDWidget::UpdateHealthBar()
 {
     if(HealthProgressBar)

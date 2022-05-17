@@ -39,6 +39,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "UI")
     int32 GetDeathsNum() const;
 
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    FString FormatBullets(int32 BulletsNum) const;
+
 protected:
     UPROPERTY(meta = (BindWidget))
     UProgressBar* HealthProgressBar;
