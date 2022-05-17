@@ -6,22 +6,6 @@
 #include "VDPlayerController.h"
 #include "Player/VDPlayerState.h"
 
-int32 UVDGameDataWidget::GetKillsNum() const
-{
-    const auto PlayerState = GetPlayerState();
-    if(!PlayerState) return 0;
-
-    return PlayerState->GetKillsNum();
-}
-
-int32 UVDGameDataWidget::GetDeathsNum() const
-{
-    const auto PlayerState = GetPlayerState();
-    if(!PlayerState) return 0;
-
-    return PlayerState->GetDeathsNum() ;
-}
-
 int32 UVDGameDataWidget::GetCurrentRoundNum() const
 {
     const auto GameMode = GetGameMode();

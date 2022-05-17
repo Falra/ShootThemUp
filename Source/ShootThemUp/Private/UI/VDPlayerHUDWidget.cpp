@@ -5,6 +5,7 @@
 #include "Components/VDHealthComponent.h"
 #include "Components/VDWeaponComponent.h"
 #include "VDUtils.h"
+#include "Components/ProgressBar.h"
 
 float UVDPlayerHUDWidget::GetHealthPercent() const
 {
@@ -60,6 +61,8 @@ void UVDPlayerHUDWidget::OnHealthChanged(float NewHealth, float DeltaHealth)
     {
         OnTakeDamage();
     }
+    
+    UpdateHealthBar();
 }
 
 void UVDPlayerHUDWidget::OnNewPawn(APawn* NewPawn)
@@ -69,4 +72,34 @@ void UVDPlayerHUDWidget::OnNewPawn(APawn* NewPawn)
     {
         HealthComp->OnHealthChanged.AddUObject(this, &UVDPlayerHUDWidget::OnHealthChanged);
     }
+    UpdateHealthBar();
+}
+
+int32 UVDPlayerHUDWidget::GetKillsNum() const
+{
+    const auto PlayerState = GetPlayerState();
+    if(!PlayerState) return 0;
+
+    return PlayerState->GetKillsNum();
+}
+
+int32 UVDPlayerHUDWidget::GetDeathsNum() const
+{
+    const auto PlayerState = GetPlayerState();
+    if(!PlayerState) return 0;
+
+    return PlayerState->GetDeathsNum();
+}
+
+void UVDPlayerHUDWidget::UpdateHealthBar()
+{
+    if(HealthProgressBar)
+    {
+        HealthProgressBar->SetFillColorAndOpacity(GetHealthPercent() > PercentColorThreshold ? GoodColor : BadColor);
+    }
+}
+
+AVDPlayerState* UVDPlayerHUDWidget::GetPlayerState() const
+{
+    return GetOwningPlayer() ? GetOwningPlayer()->GetPlayerState<AVDPlayerState>() : nullptr;
 }
