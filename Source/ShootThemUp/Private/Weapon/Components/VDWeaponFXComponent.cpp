@@ -6,6 +6,7 @@
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/DecalComponent.h"
+#include "Sound/SoundCue.h"
 
 UVDWeaponFXComponent::UVDWeaponFXComponent()
 {
@@ -34,12 +35,15 @@ void UVDWeaponFXComponent::PlayImpactFX(const FHitResult& Hit)
 
     // Decal
     auto DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), //
-        DecalData.Material,                                       //
-        DecalData.Size,                                           //
+        DecalData.Material,                                                  //
+        DecalData.Size,                                                      //
         Hit.ImpactPoint,                                                     //
         Hit.ImpactNormal.Rotation());
-    if(DecalComponent)
+    if (DecalComponent)
     {
         DecalComponent->SetFadeOut(DecalData.LifeTime, DecalData.FadeOutTime);
     }
+
+    // Sound
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactData.Sound, Hit.ImpactPoint);
 }

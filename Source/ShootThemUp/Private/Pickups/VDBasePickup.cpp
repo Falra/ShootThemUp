@@ -2,8 +2,9 @@
 
 
 #include "Pickups/VDBasePickup.h"
-
 #include "Components/SphereComponent.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBasePickup, All, All)
 
@@ -61,6 +62,7 @@ void AVDBasePickup::PickupWasTaken()
     CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
     GetRootComponent()->SetVisibility(false, true);
 
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), PickupTakenSound, GetActorLocation());
     GetWorldTimerManager().SetTimer(RespawnTimerHandle, this, &AVDBasePickup::Respawn, RespawnTime);
 }
 
