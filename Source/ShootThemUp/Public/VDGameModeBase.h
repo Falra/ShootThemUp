@@ -66,4 +66,5 @@ private:
     
     void LogPlayerInfo() const;
     void SetMatchState(EVDMatchState State);
+    void StopAllFire();
 };

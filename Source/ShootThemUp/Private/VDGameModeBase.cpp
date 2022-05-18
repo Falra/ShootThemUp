@@ -12,6 +12,7 @@
 #include "Player/VDPlayerState.h"
 #include "EngineUtils.h"
 #include "VDGameInstance.h"
+#include "VDWeaponComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogVDGameModeBase, All, All);
 
@@ -229,6 +230,7 @@ bool AVDGameModeBase::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDele
 
     if(PauseSet)
     {
+        StopAllFire();
         SetMatchState(EVDMatchState::Pause);
     }
 
@@ -253,4 +255,15 @@ void AVDGameModeBase::SetMatchState(EVDMatchState State)
     
     MatchState = State;
     OnMatchStateChanged.Broadcast(MatchState);
+}
+
+void AVDGameModeBase::StopAllFire()
+{
+    for(const auto Pawn: TActorRange<APawn>(GetWorld()))
+    {
+        const auto WeaponComponent = VDUtils::GetVDPlayerComponent<UVDWeaponComponent>(Pawn);
+        if(!WeaponComponent) continue;
+        WeaponComponent->StopFire();
+        WeaponComponent->Zoom(false);
+    }
 }

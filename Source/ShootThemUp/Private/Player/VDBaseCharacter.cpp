@@ -89,6 +89,20 @@ void AVDBaseCharacter::OnHealthChanged(float NewHealth, float DeltaHealth)
 {
 }
 
+void AVDBaseCharacter::TurnOff()
+{
+    WeaponComponent->StopFire();
+    WeaponComponent->Zoom(false);
+    Super::TurnOff();
+}
+
+void AVDBaseCharacter::Reset()
+{
+    WeaponComponent->StopFire();
+    WeaponComponent->Zoom(false);
+    Super::Reset();
+}
+
 void AVDBaseCharacter::OnGroundLanded(const FHitResult& Hit)
 {
     const auto FallVelocityZ = -GetVelocity().Z;
