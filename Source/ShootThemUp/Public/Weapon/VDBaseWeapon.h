@@ -35,6 +35,8 @@ public:
     FAmmoData GetAmmoData() const { return CurrentAmmo; }
     bool TryToAddAmmo(int32 ClipsAmount);
 
+    virtual void Zoom(bool Enabled) {}
+    
 protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")

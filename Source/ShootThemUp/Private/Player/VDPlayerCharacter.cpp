@@ -63,6 +63,10 @@ void AVDPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
     
     PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, WeaponComponent, &UVDWeaponComponent::NextWeapon);
     PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &UVDWeaponComponent::Reload);
+
+    DECLARE_DELEGATE_OneParam(FZoomInputSignature, bool);
+    PlayerInputComponent->BindAction<FZoomInputSignature>("Zoom", IE_Pressed, WeaponComponent, &UVDWeaponComponent::Zoom, true);
+    PlayerInputComponent->BindAction<FZoomInputSignature>("Zoom", IE_Released, WeaponComponent, &UVDWeaponComponent::Zoom, false);
 }
 
 bool AVDPlayerCharacter::IsRunning() const

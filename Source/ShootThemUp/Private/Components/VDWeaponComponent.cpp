@@ -238,6 +238,14 @@ bool UVDWeaponComponent::NeedAmmo(const TSubclassOf<AVDBaseWeapon>& WeaponType)
     return false;
 }
 
+void UVDWeaponComponent::Zoom(bool Enabled)
+{
+    if(CurrentWeapon)
+    {
+        CurrentWeapon->Zoom(Enabled);
+    }
+}
+
 void UVDWeaponComponent::OnClipEmpty(AVDBaseWeapon* AmmoEmptyWeapon)
 {
     if(!AmmoEmptyWeapon) return;

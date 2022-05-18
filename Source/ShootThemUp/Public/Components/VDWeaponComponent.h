@@ -32,6 +32,8 @@ public:
     bool TryToAddAmmo(const TSubclassOf<AVDBaseWeapon>& WeaponType, int32 ClipsAmount);
     bool NeedAmmo(const TSubclassOf<AVDBaseWeapon>& WeaponType);
 
+    void Zoom(bool Enabled);
+    
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     TArray<FWeaponData> WeaponData;

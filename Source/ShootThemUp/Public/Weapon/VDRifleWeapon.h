@@ -21,7 +21,8 @@ public:
 
     virtual void StartFire() override;
     virtual void StopFire() override;
-
+    virtual void Zoom(bool Enabled) override;
+    
 protected:
     
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")

@@ -30,6 +30,16 @@ void AVDRifleWeapon::StopFire()
     SetFXActive(false);
 }
 
+void AVDRifleWeapon::Zoom(bool Enabled)
+{
+    Super::Zoom(Enabled);
+    const auto Controller = Cast<APlayerController>(GetController());
+    if(!Controller || !Controller->PlayerCameraManager) return;
+
+    const TInterval<float> FOV(50.0f, 90.0f);
+    Controller->PlayerCameraManager->SetFOV(Enabled ? FOV.Min : FOV.Max);
+}
+
 void AVDRifleWeapon::BeginPlay()
 {
     Super::BeginPlay();
