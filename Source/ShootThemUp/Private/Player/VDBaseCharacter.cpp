@@ -8,6 +8,8 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/VDCharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY_STATIC(BaseCharacterLog, All, All);
 
@@ -78,6 +80,8 @@ void AVDBaseCharacter::OnDeath()
 
     GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     GetMesh()->SetSimulatePhysics(true);
+
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), DeathSound, GetActorLocation());
 }
 
 void AVDBaseCharacter::OnHealthChanged(float NewHealth, float DeltaHealth)

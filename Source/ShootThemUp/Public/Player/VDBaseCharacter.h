@@ -10,6 +10,7 @@
 class UVDHealthComponent;
 class UVDWeaponComponent;
 class UAnimMontage;
+class USoundCue;
 
 UCLASS()
 class SHOOTTHEMUP_API AVDBaseCharacter : public ACharacter
@@ -41,6 +42,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Material")
     FName MaterialColorName = "Paint Color";
     
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+    USoundCue* DeathSound;
+        
     virtual void BeginPlay() override;
 
     virtual void OnDeath();

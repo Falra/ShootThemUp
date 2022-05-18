@@ -8,18 +8,20 @@
 
 class AVDProjectile;
 
-/**
- * 
- */
 UCLASS()
 class SHOOTTHEMUP_API AVDLauncherWeapon : public AVDBaseWeapon
 {
     GENERATED_BODY()
+
 public:
     virtual void StartFire() override;
+
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     TSubclassOf<AVDProjectile> ProjectileClass;
-    
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+    USoundCue* NoAmmoSound;
+        
     virtual void MakeShot() override;
 };

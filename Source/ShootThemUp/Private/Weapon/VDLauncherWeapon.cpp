@@ -3,6 +3,8 @@
 
 #include "Weapon/VDLauncherWeapon.h"
 #include "Weapon/VDProjectile.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 
 void AVDLauncherWeapon::StartFire()
 {
@@ -12,8 +14,14 @@ void AVDLauncherWeapon::StartFire()
 
 void AVDLauncherWeapon::MakeShot()
 {
-    if(!GetWorld() || IsAmmoEmpty()) return;
+    if(!GetWorld()) return;
 
+    if(IsAmmoEmpty())
+    {
+        UGameplayStatics::SpawnSoundAtLocation(GetWorld(), NoAmmoSound, GetActorLocation());
+        return;
+    }
+    
     FVector TraceStart, TraceEnd;
     if(!GetTraceData(TraceStart, TraceEnd)) return;
     
@@ -34,5 +42,6 @@ void AVDLauncherWeapon::MakeShot()
 
     DecreaseAmmo();
     SpawnMuzzleFX();
+    UGameplayStatics::SpawnSoundAttached(FireSound, WeaponMesh, MuzzleSocketName);
     StopFire();
 }
