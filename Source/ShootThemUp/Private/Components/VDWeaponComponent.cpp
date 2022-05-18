@@ -104,6 +104,7 @@ void UVDWeaponComponent::EquipWeapon(int32 WeaponIndex)
 
     if(CurrentWeapon)
     {
+        CurrentWeapon->Zoom(false);
         CurrentWeapon->StopFire();
         AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), WeaponArmorySocketName);
     }

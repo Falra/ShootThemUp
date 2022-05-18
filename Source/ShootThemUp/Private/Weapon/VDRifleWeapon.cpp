@@ -36,8 +36,11 @@ void AVDRifleWeapon::Zoom(bool Enabled)
     const auto Controller = Cast<APlayerController>(GetController());
     if(!Controller || !Controller->PlayerCameraManager) return;
 
-    const TInterval<float> FOV(50.0f, 90.0f);
-    Controller->PlayerCameraManager->SetFOV(Enabled ? FOV.Min : FOV.Max);
+    if(Enabled)
+    {
+        DefaultFOV = Controller->PlayerCameraManager->GetFOVAngle();
+    }
+    Controller->PlayerCameraManager->SetFOV(Enabled ? FOVZoomAngle: DefaultFOV);
 }
 
 void AVDRifleWeapon::BeginPlay()

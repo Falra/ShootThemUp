@@ -43,6 +43,9 @@ protected:
     UPROPERTY(VisibleAnywhere, Category = "VFX")
     UVDWeaponFXComponent* WeaponFXComponent;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    float FOVZoomAngle = 50.0f;
+
     virtual void BeginPlay() override;
 
     virtual void MakeShot() override;
@@ -63,4 +66,7 @@ private:
     void SpawnTraceFX(const FVector& TraceStart, const FVector& TraceEnd);
 
     AController* GetController() const;
+
+    float DefaultFOV = 90.0f;
+    
 };
