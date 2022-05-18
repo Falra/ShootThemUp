@@ -9,6 +9,7 @@
 #include "VDGameModeBase.h"
 #include "Camera/CameraShakeBase.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Perception/AISense_Damage.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All);
 
@@ -19,7 +20,7 @@ UVDHealthComponent::UVDHealthComponent()
 
 bool UVDHealthComponent::TryToAddHealth(float HealthAmount)
 {
-    if(IsDead() || IsHealthFull()) return false;
+    if (IsDead() || IsHealthFull()) return false;
 
     SetHealth(Health + HealthAmount);
     return true;
@@ -37,15 +38,14 @@ void UVDHealthComponent::BeginPlay()
     check(MaxHealth > 0);
 
     SetHealth(MaxHealth);
-    
+
     AActor* ComponentOwner = GetOwner();
-    if(ComponentOwner)
+    if (ComponentOwner)
     {
         ComponentOwner->OnTakeAnyDamage.AddDynamic(this, &UVDHealthComponent::OnTakeAnyDamage);
         ComponentOwner->OnTakePointDamage.AddDynamic(this, &UVDHealthComponent::OnTakePointDamage);
         ComponentOwner->OnTakeRadialDamage.AddDynamic(this, &UVDHealthComponent::OnTakeRadialDamage);
     }
-
 }
 
 void UVDHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy,
@@ -72,8 +72,8 @@ void UVDHealthComponent::OnTakeRadialDamage(AActor* DamagedActor, float Damage, 
 void UVDHealthComponent::HealUpdate()
 {
     SetHealth(Health + HealModifier);
-    
-    if(IsHealthFull() && GetWorld())
+
+    if (IsHealthFull() && GetWorld())
     {
         GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
     }
@@ -81,33 +81,32 @@ void UVDHealthComponent::HealUpdate()
 
 void UVDHealthComponent::SetHealth(float NewHealth)
 {
-    const auto NextHealth = FMath::Clamp(NewHealth, 0.0f , MaxHealth);
+    const auto NextHealth = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
     const auto DeltaHealth = NextHealth - Health;
     Health = NextHealth;
-    
+
     OnHealthChanged.Broadcast(Health, DeltaHealth);
-    
 }
 
 void UVDHealthComponent::PlayCameraShake()
 {
-    if(IsDead()) return;
+    if (IsDead()) return;
 
     const auto Player = Cast<APawn>(GetOwner());
-    if(!Player) return;;
+    if (!Player) return;;
 
     const auto Controller = Player->GetController<APlayerController>();
-    if(!Controller || !Controller->PlayerCameraManager) return;
+    if (!Controller || !Controller->PlayerCameraManager) return;
 
     Controller->PlayerCameraManager->StartCameraShake(CameraShake);
 }
 
 void UVDHealthComponent::Killed(AController* KillerController) const
 {
-    if(!GetWorld()) return;
-    
+    if (!GetWorld()) return;
+
     const auto GameMode = Cast<AVDGameModeBase>(GetWorld()->GetAuthGameMode());
-    if(!GameMode) return;
+    if (!GameMode) return;
 
     const auto Player = Cast<APawn>(GetOwner());
     const auto VictimController = Player ? Player->Controller : nullptr;
@@ -116,12 +115,12 @@ void UVDHealthComponent::Killed(AController* KillerController) const
 
 void UVDHealthComponent::ApplyDamage(float Damage, AController* InstigatedBy)
 {
-    if(Damage <= 0.0f || IsDead() || !GetWorld() ) return;
-    
+    if (Damage <= 0.0f || IsDead() || !GetWorld()) return;
+
     SetHealth(Health - Damage);
 
     GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
-    
+
     if (IsDead())
     {
         Killed(InstigatedBy);
@@ -133,18 +132,31 @@ void UVDHealthComponent::ApplyDamage(float Damage, AController* InstigatedBy)
     }
 
     PlayCameraShake();
+    ReportDamage(Damage, InstigatedBy);
 }
 
 float UVDHealthComponent::GetPointDamageModifier(AActor* DamagedActor, const FName& BoneName) const
 {
     const auto Character = Cast<ACharacter>(DamagedActor);
-    if(!Character ||                                     //
-       !Character->GetMesh() ||                          //
-       !Character->GetMesh()->GetBodyInstance(BoneName)) //
-        return 1.0f;                                     //
+    if (!Character ||                                     //
+        !Character->GetMesh() ||                          //
+        !Character->GetMesh()->GetBodyInstance(BoneName)) //
+        return 1.0f;                                      //
 
     const auto PhysMaterial = Character->GetMesh()->GetBodyInstance(BoneName)->GetSimplePhysicalMaterial();
-    if(!PhysMaterial || !DamageModifiers.Contains(PhysMaterial)) return 1.0f;
+    if (!PhysMaterial || !DamageModifiers.Contains(PhysMaterial)) return 1.0f;
 
     return DamageModifiers[PhysMaterial];
+}
+
+void UVDHealthComponent::ReportDamage(float Damage, AController* InstigatedBy) const
+{
+    if(!GetWorld() || !InstigatedBy || !GetOwner() || !InstigatedBy->GetPawn()) return;
+    
+    UAISense_Damage::ReportDamageEvent(GetWorld(),   //
+        GetOwner(),                                  //
+        InstigatedBy->GetPawn(),                     //
+        Damage,                                      //
+        InstigatedBy->GetPawn()->GetActorLocation(), //
+        GetOwner()->GetActorLocation());
 }
