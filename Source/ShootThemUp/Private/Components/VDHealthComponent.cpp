@@ -2,13 +2,13 @@
 
 
 #include "Components/VDHealthComponent.h"
-#include "GameFramework/Actor.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "VDGameModeBase.h"
 #include "Camera/CameraShakeBase.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All);
 
@@ -42,6 +42,8 @@ void UVDHealthComponent::BeginPlay()
     if(ComponentOwner)
     {
         ComponentOwner->OnTakeAnyDamage.AddDynamic(this, &UVDHealthComponent::OnTakeAnyDamage);
+        ComponentOwner->OnTakePointDamage.AddDynamic(this, &UVDHealthComponent::OnTakePointDamage);
+        ComponentOwner->OnTakeRadialDamage.AddDynamic(this, &UVDHealthComponent::OnTakeRadialDamage);
     }
 
 }
@@ -49,23 +51,22 @@ void UVDHealthComponent::BeginPlay()
 void UVDHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy,
     AActor* DamageCauser)
 {
-    if(Damage <= 0.0f || IsDead() || !GetWorld() ) return;
-    
-    SetHealth(Health - Damage);
+    UE_LOG(LogHealthComponent, Display, TEXT("On any damage: %f"), Damage);
+}
 
-    GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
-    
-    if (IsDead())
-    {
-        Killed(InstigatedBy);
-        OnDeath.Broadcast();
-    }
-    else if (AutoHeal)
-    {
-        GetWorld()->GetTimerManager().SetTimer(HealTimerHandle, this, &UVDHealthComponent::HealUpdate, HealUpdateTime, true, HealDelay);
-    }
+void UVDHealthComponent::OnTakePointDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation,
+    UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, const UDamageType* DamageType, AActor* DamageCauser)
+{
+    const auto FinalDamage = Damage * GetPointDamageModifier(DamagedActor, BoneName);
+    UE_LOG(LogHealthComponent, Display, TEXT("On point damage: %f (final %f), bone: %s"), Damage, FinalDamage, *BoneName.ToString());
+    ApplyDamage(FinalDamage, InstigatedBy);
+}
 
-    PlayCameraShake();
+void UVDHealthComponent::OnTakeRadialDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, FVector Origin,
+    FHitResult HitInfo, AController* InstigatedBy, AActor* DamageCauser)
+{
+    UE_LOG(LogHealthComponent, Display, TEXT("On radial damage: %f"), Damage);
+    ApplyDamage(Damage, InstigatedBy);
 }
 
 void UVDHealthComponent::HealUpdate()
@@ -111,4 +112,39 @@ void UVDHealthComponent::Killed(AController* KillerController) const
     const auto Player = Cast<APawn>(GetOwner());
     const auto VictimController = Player ? Player->Controller : nullptr;
     GameMode->Killed(KillerController, VictimController);
+}
+
+void UVDHealthComponent::ApplyDamage(float Damage, AController* InstigatedBy)
+{
+    if(Damage <= 0.0f || IsDead() || !GetWorld() ) return;
+    
+    SetHealth(Health - Damage);
+
+    GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
+    
+    if (IsDead())
+    {
+        Killed(InstigatedBy);
+        OnDeath.Broadcast();
+    }
+    else if (AutoHeal)
+    {
+        GetWorld()->GetTimerManager().SetTimer(HealTimerHandle, this, &UVDHealthComponent::HealUpdate, HealUpdateTime, true, HealDelay);
+    }
+
+    PlayCameraShake();
+}
+
+float UVDHealthComponent::GetPointDamageModifier(AActor* DamagedActor, const FName& BoneName) const
+{
+    const auto Character = Cast<ACharacter>(DamagedActor);
+    if(!Character ||                                     //
+       !Character->GetMesh() ||                          //
+       !Character->GetMesh()->GetBodyInstance(BoneName)) //
+        return 1.0f;                                     //
+
+    const auto PhysMaterial = Character->GetMesh()->GetBodyInstance(BoneName)->GetSimplePhysicalMaterial();
+    if(!PhysMaterial || !DamageModifiers.Contains(PhysMaterial)) return 1.0f;
+
+    return DamageModifiers[PhysMaterial];
 }
