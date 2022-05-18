@@ -2,8 +2,9 @@
 
 
 #include "Player/VDPlayerController.h"
-#include "VDGameModeBase.h"
 #include "Components/VDRespawnComponent.h"
+#include "VDGameModeBase.h"
+#include "VDGameInstance.h"
 
 AVDPlayerController::AVDPlayerController()
 {
@@ -30,6 +31,7 @@ void AVDPlayerController::SetupInputComponent()
     if(!InputComponent) return;
 
     InputComponent->BindAction("PauseGame", IE_Pressed, this, &AVDPlayerController::OnPauseGame);
+    InputComponent->BindAction("Mute", IE_Pressed, this, &AVDPlayerController::OnMuteSound);
 }
 
 void AVDPlayerController::OnPauseGame()
@@ -51,4 +53,14 @@ void AVDPlayerController::OnMatchStateChanged(EVDMatchState State)
         SetInputMode(FInputModeUIOnly()); 
         bShowMouseCursor = true;
     }
+}
+
+void AVDPlayerController::OnMuteSound()
+{
+    if(!GetWorld()) return;
+    
+    const auto MyGameInstance = GetWorld()->GetGameInstance<UVDGameInstance>();
+    if(!MyGameInstance) return;;
+
+    MyGameInstance->ToggleVolume();
 }
