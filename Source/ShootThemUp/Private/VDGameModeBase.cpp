@@ -87,7 +87,7 @@ void AVDGameModeBase::StartRound()
 
 void AVDGameModeBase::GameTimerUpdate()
 {
-    UE_LOG(LogVDGameModeBase, Display, TEXT("Time: %i / Round: %i / %i"), RoundCountDown, CurrentRound, GameData.RoundsNum);
+    // UE_LOG(LogVDGameModeBase, Display, TEXT("Time: %i / Round: %i / %i"), RoundCountDown, CurrentRound, GameData.RoundsNum);
 
     // const auto TimerRate = GetWorldTimerManager().GetTimerRate(GameRoundTimerHandle);
     // RoundCountDown -= TimerRate;
